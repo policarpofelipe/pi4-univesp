@@ -11,7 +11,7 @@ A VPS é compartilhada. O PI não pode arriscar outros serviços.
 
 - Nunca versionar `.env` real, senhas, dumps ou dados identificáveis.
 - Nunca copiar credenciais para `.cursor/`, README, código ou respostas de API.
-- `.env.example` só com placeholders. Se um exemplo parecer senha real, não reproduzi-la; registrar o risco.
+- `.env.example` só com placeholders (`altere-esta-senha`). Se um exemplo parecer senha real, não reproduzi-la; sanitizar o arquivo e rotacionar o segredo no servidor. O histórico do Git não invalida senha vazada.
 - Não imprimir `DB_PASSWORD` nem stack traces.
 
 ## VPS

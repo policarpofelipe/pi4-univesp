@@ -83,13 +83,18 @@ O `.gitignore` atual cobre `.env`, `*.env`, `.venv/`, `venv/`, `__pycache__/`, `
 
 `.env.example` pode ser versionado, **somente com placeholders**.
 
-### Divergência encontrada
+### Correção de 2026-09-10
 
-`backend/.env.example` está no Git e contém um valor de `DB_PASSWORD` que **não parece placeholder**. Isso conflita com a política de não versionar credenciais.
+`backend/.env.example` chegou a ser commitado com um valor de `DB_PASSWORD` que não era placeholder. O working tree agora usa só `altere-esta-senha`.
 
-Esta etapa **não alterou** o arquivo (correção silenciosa proibida). Ação recomendada, quando autorizada: trocar o exemplo por placeholder, rotacionar a senha no servidor e confirmar que o `.env` real permanece só no runtime, com permissão restrita.
+Isso **não apaga** o valor antigo do histórico do Git/GitHub. A correção completa exige:
 
-Não copiar esse valor para documentação, chat ou novos arquivos.
+1. commitar e enviar este exemplo sanitizado;
+2. **rotacionar** a senha de `flivocom_pi4app` no MariaDB da VPS;
+3. atualizar somente `/home/flivocom/pi4-backend/.env`;
+4. reiniciar `pi4-backend.service` e validar `GET /api/status/banco`.
+
+Não copiar o valor antigo para documentação, chat ou novos arquivos. Não reescrever o histórico do Git só para “apagar” a senha: quem já clonou o repositório ainda a teria; a rotação no servidor é o que invalida o segredo.
 
 ---
 

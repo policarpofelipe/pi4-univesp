@@ -24,6 +24,18 @@ Itens abaixo são informação de ambiente fornecida e já validada, salvo onde 
 
 `GET /api/status/banco` não respondeu a tempo nesta inspeção; a validação prévia do grupo permanece como referência de ambiente.
 
+### Segurança (em correção — bloqueia a fase 1)
+
+| Item | Situação |
+|---|---|
+| `backend/.env.example` com placeholder | OK no working tree (`altere-esta-senha`) |
+| `.gitignore` reforçado para `.env.*` | OK no working tree |
+| Commit/push do exemplo sanitizado | Pendente de autorização |
+| Rotação da senha de `flivocom_pi4app` na VPS | Pendente |
+| Atualizar `.env` de runtime e reiniciar o serviço | Pendente |
+
+Não avançar à modelagem enquanto a senha antiga (já presente no histórico do Git) não for invalidada no MariaDB.
+
 ### Não concluído (domínio do PI)
 
 | Item | Situação |

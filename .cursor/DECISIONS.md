@@ -116,15 +116,25 @@ Status: `aceita` | `descartada` | `aberta`.
 
 ---
 
+## ADR-012 — `.env.example` só com placeholder; senha vazada deve ser rotacionada
+
+- **Status:** aceita (working tree corrigido; rotação no servidor ainda pendente)
+- **Contexto:** o commit inicial versionou `DB_PASSWORD` real em `backend/.env.example`.
+- **Decisão:** o exemplo passa a usar apenas `altere-esta-senha`. A senha de `flivocom_pi4app` no MariaDB deve ser trocada na VPS; o `.env` de runtime não volta ao Git. Não reescrever o histórico só para ocultar o valor antigo.
+- **Por quê:** o histórico público/clonável já contém o segredo; só a rotação o invalida. Placeholder evita novo vazamento.
+- **Consequência:** após o commit sanitizado, ainda é obrigatório `ALTER USER` + atualizar `/home/flivocom/pi4-backend/.env` + reiniciar `pi4-backend.service`.
+
+---
+
 ## Divergências entre o briefing e o repositório
 
-Registradas na inspeção de 2026-09-10. **Não corrigidas silenciosamente.**
+Registradas na inspeção de 2026-09-10. A falha de credencial no exemplo foi corrigida no working tree (ADR-012); as demais permanecem só como registro.
 
 | Briefing / expectativa | Estado real | Fonte da verdade |
 |---|---|---|
 | Pastas `sql/` e `ml/` | Não existem | Repositório |
 | Estrutura "aproximadamente" com essas pastas | Só `backend/` e `frontend/` | Repositório |
-| `.env.example` sem segredo | `DB_PASSWORD` versionado não parece placeholder | Repositório — risco; ver `DEVELOPMENT.md` |
+| `.env.example` sem segredo | Working tree sanitizado (`altere-esta-senha`); valor antigo ainda no histórico até a rotação na VPS | Repositório + ADR-012 |
 | Clone em `/home/flivocom/pi4-univesp` | Clone inspecionado em Windows `c:\dev\pi4-univesp\pi4-univesp` | Duas cópias legítimas (VPS vs máquina local) |
 | Dashboard com Plotly | `index.html` é smoke test, sem Plotly | Repositório (esperado para o estágio atual) |
 | `GET /api/status/banco` validado | Confirmado pelo grupo; timeout nesta inspeção remota | Ambiente prévio vs tentativa de 2026-09-10 |
