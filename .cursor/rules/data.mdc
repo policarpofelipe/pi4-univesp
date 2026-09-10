@@ -1,0 +1,25 @@
+---
+description: Modelagem só após inventário da fonte; sem DDL imaginada
+alwaysApply: true
+---
+
+# PI4 — dados
+
+Ler `.cursor/DATA.md`. O schema **não** está fechado. O banco de aplicação está no estado inicial.
+
+Não criar tabelas, colunas, migrations ou seeds fictícios até a fase 2 do `ROADMAP.md`, depois do inventário da fonte real.
+
+## Ordem obrigatória
+
+Fonte → campos e significados → volume/datas/nulos/avaliações → anonimização → schema analítico mínimo → só então SQL.
+
+Entidades e atributos em `DATA.md` são **candidatos**. Não persistir campo só porque está na lista.
+
+## Camadas
+
+- SQL: filtros, joins, agregações, reduzir volume transferido.
+- Pandas: EDA, feature engineering, integração com scikit-learn.
+- Não puxar a base inteira para memória sem necessidade.
+- Não usar Spark/Hadoop.
+
+"Ponto de atenção" de clientes, se existir, é heurística explícita até decisão em contrário. Não é score de IA.

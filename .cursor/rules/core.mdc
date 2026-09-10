@@ -1,0 +1,31 @@
+---
+description: Identidade, stack congelada e fonte de verdade do PI4 UNIVESP
+alwaysApply: true
+---
+
+# PI4 — núcleo
+
+Projeto Integrador 4 (UNIVESP): dashboard acadêmico de análise de chamados de suporte. Não é produto SaaS.
+
+Antes de alteração estrutural, ler `.cursor/PROJECT.md`, `.cursor/DECISIONS.md` e `.cursor/ROADMAP.md`. Não reinventar a arquitetura.
+
+## Stack congelada
+
+MariaDB 10.11 · Python 3.12 + FastAPI + Uvicorn · Pandas · scikit-learn · SQLAlchemy + PyMySQL · HTML/CSS/JS · Plotly.js · Apache na VPS.
+
+Não introduzir, sem pedido explícito: React, Node, TypeScript, Streamlit, Redis, Kafka, Spark, Kubernetes, microsserviços, filas, WebSockets, segundo banco.
+
+## Arquitetura
+
+Browser → Apache → FastAPI (`127.0.0.1:8000`) → SQLAlchemy → MariaDB.
+
+Descartado: dataset estático em GitHub Pages.
+
+Repo ≠ runtime. Não misturar `pi4-univesp` com `/home/flivocom/pi4-backend` nem com o document root.
+
+## Conduta
+
+- Preferir solução simples e explicável na banca.
+- Hipóteses operacionais (almoço, após 20h, sábado) são para testar, não para assumir.
+- Correlação ≠ causalidade.
+- Não criar tabelas, dashboard, ML, dados fictícios nem mudanças de infra fora da fase autorizada em `ROADMAP.md`.

@@ -1,0 +1,22 @@
+---
+description: Frontend HTML/CSS/JS e Plotly; sem framework
+globs: frontend/**
+alwaysApply: false
+---
+
+# PI4 — frontend
+
+Ler `.cursor/ARCHITECTURE.md`. Stack: HTML, CSS, JavaScript puro, Plotly.js. Sem React/Node/TypeScript/Streamlit.
+
+## Comportamento
+
+- Chamar `/api/...` com URLs relativas (Apache faz o proxy). Não usar `127.0.0.1:8000` na página publicada.
+- Filtros combináveis; atualizar KPIs/gráficos a partir do JSON.
+- Estados de loading e erro de API.
+- Cada gráfico deve responder uma pergunta de `.cursor/PROJECT.md`. Sem redundância.
+
+## Limite
+
+Regras analíticas críticas ficam no backend. JS não recalcula a análise oficial.
+
+O `index.html` atual é smoke test de ambiente. Não transformar em dashboard completo fora da fase 4 do `ROADMAP.md`.
