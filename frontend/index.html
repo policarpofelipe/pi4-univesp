@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PI4 UNIVESP</title>
+</head>
+
+<body>
+
+    <h1>PI4 UNIVESP</h1>
+    <p>Dashboard de Análise do Suporte Técnico</p>
+
+    <h2>Status do ambiente</h2>
+
+    <div id="backend">
+        Verificando backend...
+    </div>
+
+    <div id="banco">
+        Verificando banco...
+    </div>
+
+    <script>
+        async function verificarAmbiente() {
+            try {
+                const respostaBackend = await fetch('/api/status');
+                const backend = await respostaBackend.json();
+
+                document.getElementById('backend').textContent =
+                    `Backend: ${backend.status} | ${backend.backend} | Python ${backend.python}`;
+
+                const respostaBanco = await fetch('/api/status/banco');
+                const banco = await respostaBanco.json();
+
+                document.getElementById('banco').textContent =
+                    `Banco: ${banco.status} | ${banco.servidor} | ${banco.versao}`;
+
+            } catch (erro) {
+                document.getElementById('backend').textContent =
+                    'Erro ao acessar a API';
+
+                console.error(erro);
+            }
+        }
+
+        verificarAmbiente();
+    </script>
+
+</body>
+</html>

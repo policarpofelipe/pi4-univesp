@@ -1,0 +1,21 @@
+# Credenciais
+.env
+*.env
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# IDE / sistema
+.vscode/
+.idea/
+.DS_Store
+
+# Dados reais ou privados
+data/raw/
+data/private/
+
+# Modelos gerados
+models/
