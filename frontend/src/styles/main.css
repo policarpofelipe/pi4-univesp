@@ -198,12 +198,14 @@ a:hover {
 }
 
 .login-identidade h1 {
-  margin: 0 0 var(--space-sm);
-  color: var(--color-identity);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-tight);
-  letter-spacing: var(--letter-mark);
+  margin: 0 0 var(--space-md);
+  line-height: 0;
+}
+
+.logo-univesp {
+  display: block;
+  width: min(100%, 18rem);
+  height: auto;
 }
 
 .login-identidade .marca-desc {
