@@ -7,7 +7,12 @@ import config as app_config
 from modelos import Base
 
 config = context.config
-config.set_main_option("sqlalchemy.url", app_config.DATABASE_URL)
+# ConfigParser do Alembic trata % como interpolação; senhas percent-encoded
+# quebram set_main_option. Duplicar % só nesta fronteira, não na URL do SQLAlchemy.
+config.set_main_option(
+    "sqlalchemy.url",
+    app_config.DATABASE_URL.replace("%", "%%"),
+)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
