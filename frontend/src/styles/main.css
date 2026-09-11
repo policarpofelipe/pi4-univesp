@@ -26,6 +26,13 @@ body {
   outline-offset: 2px;
 }
 
+button,
+input,
+select,
+textarea {
+  border-radius: var(--radius);
+}
+
 .skip-link {
   position: absolute;
   left: var(--gutter);
@@ -35,6 +42,7 @@ body {
   background: var(--color-surface-raised);
   color: var(--color-text);
   border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius);
   min-height: var(--control-height);
 }
 
@@ -61,7 +69,9 @@ a:hover {
   font-weight: var(--font-weight-semibold);
 }
 
-.campo input {
+.campo input,
+.campo select,
+.campo textarea {
   width: 100%;
   min-height: var(--control-height);
   padding: var(--space-sm) var(--space-md);
@@ -72,11 +82,20 @@ a:hover {
   color: var(--color-text);
 }
 
-.campo input:hover {
+.campo textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.campo input:hover,
+.campo select:hover,
+.campo textarea:hover {
   border-color: var(--color-identity);
 }
 
-.campo input:disabled {
+.campo input:disabled,
+.campo select:disabled,
+.campo textarea:disabled {
   background: var(--color-disabled-bg);
   color: var(--color-disabled);
 }
@@ -125,22 +144,30 @@ a:hover {
   border-color: var(--color-identity);
 }
 
+.botao-bloco {
+  width: 100%;
+}
+
 .aviso {
   margin: var(--space-md) 0 0;
-  padding: var(--space-sm) 0;
+  padding: var(--space-sm) var(--space-md);
   font-size: var(--font-size-sm);
+  border-radius: var(--radius-sm);
 }
 
 .aviso[data-estado="ok"] {
   color: var(--color-success);
+  background: var(--color-success-bg);
 }
 
 .aviso[data-estado="erro"] {
   color: var(--color-danger);
+  background: var(--color-danger-bg);
 }
 
 .aviso[data-estado="carregando"] {
   color: var(--color-text-muted);
+  background: var(--color-surface);
 }
 
 .link-github {
@@ -168,27 +195,41 @@ a:hover {
   flex-shrink: 0;
 }
 
+.cartao {
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+  padding: var(--space-lg);
+}
+
+.login-body {
+  background: var(--color-surface);
+}
+
 .pagina-login {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
-  width: min(100% - (var(--gutter) * 2), 68rem);
-  margin: var(--space-lg) auto var(--space-2xl);
+  min-height: 100vh;
 }
 
 .login-auth {
-  order: -1;
-  background: var(--color-surface-raised);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-raised);
-  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--gutter);
+  background: var(--color-surface);
+}
+
+.login-auth-caixa {
+  width: min(100%, 22rem);
 }
 
 .login-auth h2 {
   margin: 0 0 var(--space-sm);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-tight);
+  color: var(--color-identity);
 }
 
 .login-auth .intro {
@@ -197,28 +238,88 @@ a:hover {
   font-size: var(--font-size-sm);
 }
 
+.login-projeto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  padding: var(--space-xl) var(--gutter) var(--space-2xl);
+  background: var(--color-identity);
+  color: var(--color-on-identity);
+}
+
 .login-identidade h1 {
-  margin: 0 0 var(--space-md);
+  margin: var(--space-sm) 0 var(--space-md);
   line-height: 0;
 }
 
 .logo-univesp {
   display: block;
-  width: min(100%, 18rem);
+  width: min(100%, 16rem);
   height: auto;
+  mix-blend-mode: screen;
 }
 
 .login-identidade .marca-desc {
   margin: 0 0 var(--space-md);
+  max-width: 22rem;
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-tight);
+  color: var(--color-on-identity);
 }
 
 .login-identidade .meta {
   margin: 0;
-  color: var(--color-text-muted);
+  color: var(--color-on-identity-muted);
   font-size: var(--font-size-sm);
+}
+
+.login-ilustracao {
+  margin: 0;
+  max-width: 28rem;
+}
+
+.login-ilustracao svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+}
+
+.ilust-placa {
+  fill: var(--color-identity-deep);
+}
+
+.ilust-rotulo {
+  fill: var(--color-on-identity-muted);
+}
+
+.ilust-valor {
+  fill: var(--color-on-identity);
+}
+
+.ilust-linha {
+  stroke: var(--color-chart-1);
+}
+
+.ilust-barra-a {
+  fill: var(--color-chart-3);
+}
+
+.ilust-barra-b {
+  fill: var(--color-chart-1);
+}
+
+.ilust-barra-c {
+  fill: var(--color-chart-2);
+}
+
+.ilust-anel-fundo {
+  stroke: var(--color-chart-2);
+}
+
+.ilust-anel {
+  stroke: var(--color-chart-1);
 }
 
 .login-integrantes h2 {
@@ -227,7 +328,7 @@ a:hover {
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: var(--color-on-identity-muted);
 }
 
 .grade-integrantes {
@@ -245,41 +346,46 @@ a:hover {
   margin: 0;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+  color: var(--color-on-identity);
 }
 
 .grade-integrantes dd {
   margin: var(--space-3xs) 0 0;
-  color: var(--color-text-muted);
+  color: var(--color-on-identity-muted);
   font-size: var(--font-size-xs);
   font-variant-numeric: tabular-nums;
 }
 
 @media (min-width: 56rem) {
-  .pagina-login {
-    display: grid;
-    grid-template-columns: 1fr var(--auth-width);
-    grid-template-areas:
-      "identidade auth"
-      "integrantes auth";
-    align-items: start;
-    column-gap: var(--space-2xl);
-    row-gap: var(--space-xl);
+  .login-body {
+    overflow: hidden;
   }
 
-  .login-identidade {
-    grid-area: identidade;
-    order: 0;
+  .pagina-login {
+    display: grid;
+    grid-template-columns: minmax(22rem, 28rem) 1fr;
+    min-height: 100vh;
+    max-height: 100vh;
+  }
+
+  .login-auth,
+  .login-projeto {
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
   }
 
   .login-auth {
-    grid-area: auth;
-    order: 0;
-    position: sticky;
-    top: var(--space-lg);
+    padding: var(--space-2xl) var(--space-xl);
   }
 
-  .login-integrantes {
-    grid-area: integrantes;
+  .login-projeto {
+    justify-content: space-between;
+    padding: var(--space-2xl) var(--space-2xl) var(--space-xl);
+  }
+
+  .login-ilustracao {
+    max-width: 32rem;
   }
 }
 
@@ -315,15 +421,22 @@ a:hover {
   display: inline-flex;
   align-items: center;
   min-height: var(--control-height);
-  padding: 0 var(--space-sm);
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-sm);
   color: var(--color-on-identity);
   text-decoration: none;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
 
+.shell-nav a:hover {
+  background: rgb(255 255 255 / 8%);
+  color: var(--color-on-identity);
+}
+
 .shell-nav a[aria-current="page"] {
-  box-shadow: inset 0 -2px 0 var(--color-on-identity);
+  background: rgb(255 255 255 / 10%);
+  box-shadow: inset 0 0 0 1px var(--color-on-identity-border);
 }
 
 .shell-user {
@@ -364,6 +477,13 @@ a:hover {
   color: var(--color-identity);
 }
 
+.shell-main h2 {
+  margin: var(--space-xl) 0 var(--space-md);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-identity);
+}
+
 .shell-main .lede {
   margin: 0 0 var(--space-lg);
   color: var(--color-text-muted);
@@ -372,13 +492,23 @@ a:hover {
 
 .painel-vazio {
   margin: 0;
-  padding: var(--space-lg) 0;
+  padding: var(--space-lg);
   color: var(--color-text-muted);
-  border-top: var(--border-width) solid var(--color-border);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
 }
 
 .tabela-envolve {
   overflow-x: auto;
+  background: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.tabela-envolve caption {
+  padding: var(--space-md) var(--space-md) 0;
 }
 
 table {
@@ -396,9 +526,13 @@ caption {
 th,
 td {
   text-align: left;
-  padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
+  padding: var(--space-sm) var(--space-md);
   border-bottom: var(--border-width) solid var(--color-border);
   vertical-align: top;
+}
+
+tr:last-child td {
+  border-bottom: 0;
 }
 
 th {
@@ -415,10 +549,18 @@ th {
 
 .estado-pagina {
   margin: 0;
+  padding: var(--space-lg);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
 }
 
 .form-restrito {
   max-width: 28rem;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+  padding: var(--space-lg);
 }
 
 .convite-meta {
@@ -442,7 +584,6 @@ th {
 }
 
 @media (max-width: 40rem) {
-  .pagina-login,
   .shell-main {
     width: calc(100% - var(--space-md) * 2);
   }

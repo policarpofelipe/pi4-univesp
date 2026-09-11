@@ -176,7 +176,7 @@ Não existem as pastas `sql/` e `ml/`. Plotly está em `package.json` e ainda n�
 
 ```
 frontend/
-├── index.html          ← login institucional (home pública)
+├── index.html          ← login (form à esquerda; identidade + ilustração à direita)
 ├── painel.html
 ├── convite.html
 ├── convites.html

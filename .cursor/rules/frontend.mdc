@@ -18,7 +18,9 @@ Vanilla JS (ES Modules), HTML5, CSS próprio, Plotly.js. Build: Node 24 LTS + np
 - Filtros combináveis; KPIs/gráficos a partir do JSON; loading e erro.
 - Cada gráfico responde uma pergunta de `PROJECT.md`.
 - Lógica analítica crítica no backend.
-- Reutilizar tokens CSS; não inventar cor/spacing local solto.
+- Reutilizar tokens CSS; não inventar cor/spacing/radius local solto.
+- Controles e cartões novos: `border-radius: var(--radius)` (ou `--radius-sm`). Não voltar a cantos retos.
+- Login: formulário à esquerda (fundo claro); identidade + logo + ilustração SVG de análise à direita (fundo `--color-identity`). Sem paleta de templates (roxo etc.). Ilustração ≠ Plotly/dados reais.
 
 ## Acessibilidade
 

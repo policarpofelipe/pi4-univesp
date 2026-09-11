@@ -5,110 +5,283 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UNIVESP Entrar</title>
   </head>
-  <body>
+  <body class="login-body">
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
     <div class="pagina-login">
-      <header class="login-identidade">
-        <p class="meta">Projeto Integrador IV</p>
-        <h1>
-          <img
-            class="logo-univesp"
-            src="/univesp.png"
-            alt="UNIVESP"
-            width="369"
-            height="129"
-          />
-        </h1>
-        <p class="marca-desc">Análise de Dados do Suporte Técnico</p>
-        <p class="meta">Engenharia de Computação</p>
-        <p class="meta">2º semestre de 2026</p>
-      </header>
       <main id="conteudo" class="login-auth">
-        <h2>Entrar</h2>
-        <p class="intro">Acesso restrito a pessoas convidadas.</p>
-        <form id="form-login">
-          <div class="campo">
-            <label for="email">E-mail</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autocomplete="username"
-              required
+        <div class="login-auth-caixa">
+          <h2>Entrar</h2>
+          <p class="intro">Acesso restrito a pessoas convidadas.</p>
+          <form id="form-login">
+            <div class="campo">
+              <label for="email">E-mail</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="username"
+                required
+              />
+            </div>
+            <div class="campo">
+              <label for="senha">Senha</label>
+              <input
+                id="senha"
+                name="senha"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <button type="submit" class="botao botao-bloco">Entrar</button>
+          </form>
+          <p id="aviso-login" class="aviso" hidden aria-live="polite"></p>
+          <a
+            class="link-github"
+            href="https://github.com/policarpofelipe/pi4-univesp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                fill="currentColor"
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"
+              />
+            </svg>
+            Repositório no GitHub
+          </a>
+        </div>
+      </main>
+      <aside class="login-projeto">
+        <header class="login-identidade">
+          <p class="meta">Projeto Integrador IV</p>
+          <h1>
+            <img
+              class="logo-univesp"
+              src="/univesp.png"
+              alt="UNIVESP"
+              width="369"
+              height="129"
             />
-          </div>
-          <div class="campo">
-            <label for="senha">Senha</label>
-            <input
-              id="senha"
-              name="senha"
-              type="password"
-              autocomplete="current-password"
-              required
-            />
-          </div>
-          <button type="submit" class="botao">Entrar</button>
-        </form>
-        <p id="aviso-login" class="aviso" hidden aria-live="polite"></p>
-        <a
-          class="link-github"
-          href="https://github.com/policarpofelipe/pi4-univesp"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+          </h1>
+          <p class="marca-desc">Análise de Dados do Suporte Técnico</p>
+          <p class="meta">Engenharia de Computação</p>
+          <p class="meta">2º semestre de 2026</p>
+        </header>
+        <figure class="login-ilustracao" aria-hidden="true">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="20"
-            height="20"
-            aria-hidden="true"
+            viewBox="0 0 360 200"
+            width="360"
+            height="200"
             focusable="false"
           >
-            <path
-              fill="currentColor"
-              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"
+            <rect
+              class="ilust-placa"
+              x="8"
+              y="12"
+              width="110"
+              height="52"
+              rx="12"
+            />
+            <rect
+              class="ilust-placa"
+              x="126"
+              y="12"
+              width="110"
+              height="52"
+              rx="12"
+            />
+            <rect
+              class="ilust-placa"
+              x="244"
+              y="12"
+              width="108"
+              height="52"
+              rx="12"
+            />
+            <text class="ilust-rotulo" x="20" y="34" font-size="10">
+              Volume
+            </text>
+            <text
+              class="ilust-valor"
+              x="20"
+              y="52"
+              font-size="16"
+              font-weight="700"
+            >
+              1.284
+            </text>
+            <text class="ilust-rotulo" x="138" y="34" font-size="10">
+              Tempo médio
+            </text>
+            <text
+              class="ilust-valor"
+              x="138"
+              y="52"
+              font-size="16"
+              font-weight="700"
+            >
+              18 min
+            </text>
+            <text class="ilust-rotulo" x="256" y="34" font-size="10">
+              Avaliação
+            </text>
+            <text
+              class="ilust-valor"
+              x="256"
+              y="52"
+              font-size="16"
+              font-weight="700"
+            >
+              4,6
+            </text>
+            <rect
+              class="ilust-placa"
+              x="8"
+              y="76"
+              width="220"
+              height="112"
+              rx="12"
+            />
+            <polyline
+              class="ilust-linha"
+              fill="none"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              points="24,148 58,128 92,134 126,108 160,118 194,96 214,102"
+            />
+            <rect
+              class="ilust-barra-a"
+              x="28"
+              y="168"
+              width="14"
+              height="10"
+              rx="2"
+            />
+            <rect
+              class="ilust-barra-b"
+              x="52"
+              y="158"
+              width="14"
+              height="20"
+              rx="2"
+            />
+            <rect
+              class="ilust-barra-a"
+              x="76"
+              y="150"
+              width="14"
+              height="28"
+              rx="2"
+            />
+            <rect
+              class="ilust-barra-b"
+              x="100"
+              y="142"
+              width="14"
+              height="36"
+              rx="2"
+            />
+            <rect
+              class="ilust-barra-c"
+              x="124"
+              y="154"
+              width="14"
+              height="24"
+              rx="2"
+            />
+            <rect
+              class="ilust-barra-b"
+              x="148"
+              y="136"
+              width="14"
+              height="42"
+              rx="2"
+            />
+            <rect
+              class="ilust-barra-a"
+              x="172"
+              y="148"
+              width="14"
+              height="30"
+              rx="2"
+            />
+            <rect
+              class="ilust-placa"
+              x="240"
+              y="76"
+              width="112"
+              height="112"
+              rx="12"
+            />
+            <circle
+              class="ilust-anel-fundo"
+              cx="296"
+              cy="128"
+              r="32"
+              fill="none"
+              stroke-width="10"
+            />
+            <circle
+              class="ilust-anel"
+              cx="296"
+              cy="128"
+              r="32"
+              fill="none"
+              stroke-width="10"
+              stroke-dasharray="80 201"
+              stroke-linecap="round"
+              transform="rotate(-90 296 128)"
             />
           </svg>
-          Repositório no GitHub
-        </a>
-      </main>
-      <section class="login-integrantes" aria-labelledby="titulo-integrantes">
-        <h2 id="titulo-integrantes">Integrantes</h2>
-        <dl class="grade-integrantes">
-          <div>
-            <dt>ALEX FERNANDES DE SOUZA</dt>
-            <dd>RA 24210638</dd>
-          </div>
-          <div>
-            <dt>ANA FLAVIA DAMASCENO SILVA</dt>
-            <dd>RA 24217048</dd>
-          </div>
-          <div>
-            <dt>CARLOS ALBERTO LEITE SANTOS</dt>
-            <dd>RA 23203225</dd>
-          </div>
-          <div>
-            <dt>DAVI COSTA BASTOS</dt>
-            <dd>RA 23212266</dd>
-          </div>
-          <div>
-            <dt>FELIPE MARTINS POLICARPO</dt>
-            <dd>RA 23200830</dd>
-          </div>
-          <div>
-            <dt>ISABELLA APARECIDA MARZOLA</dt>
-            <dd>RA 23208128</dd>
-          </div>
-          <div>
-            <dt>LETICIA TOSHIE NASCIMENTO KURANAGA</dt>
-            <dd>RA 24205903</dd>
-          </div>
-          <div>
-            <dt>TULLIO CESAR LEITE SANTOS</dt>
-            <dd>RA 23201546</dd>
-          </div>
-        </dl>
-      </section>
+        </figure>
+        <section class="login-integrantes" aria-labelledby="titulo-integrantes">
+          <h2 id="titulo-integrantes">Integrantes</h2>
+          <dl class="grade-integrantes">
+            <div>
+              <dt>ALEX FERNANDES DE SOUZA</dt>
+              <dd>RA 24210638</dd>
+            </div>
+            <div>
+              <dt>ANA FLAVIA DAMASCENO SILVA</dt>
+              <dd>RA 24217048</dd>
+            </div>
+            <div>
+              <dt>CARLOS ALBERTO LEITE SANTOS</dt>
+              <dd>RA 23203225</dd>
+            </div>
+            <div>
+              <dt>DAVI COSTA BASTOS</dt>
+              <dd>RA 23212266</dd>
+            </div>
+            <div>
+              <dt>FELIPE MARTINS POLICARPO</dt>
+              <dd>RA 23200830</dd>
+            </div>
+            <div>
+              <dt>ISABELLA APARECIDA MARZOLA</dt>
+              <dd>RA 23208128</dd>
+            </div>
+            <div>
+              <dt>LETICIA TOSHIE NASCIMENTO KURANAGA</dt>
+              <dd>RA 24205903</dd>
+            </div>
+            <div>
+              <dt>TULLIO CESAR LEITE SANTOS</dt>
+              <dd>RA 23201546</dd>
+            </div>
+          </dl>
+        </section>
+      </aside>
     </div>
     <script type="module" src="/src/paginas/login.js"></script>
   </body>

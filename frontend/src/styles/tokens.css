@@ -1,8 +1,9 @@
 :root {
   --color-background: #e6eef3;
-  --color-surface: #f5f8fb;
+  --color-surface: #eef3f7;
   --color-surface-raised: #ffffff;
   --color-identity: #0b3d4a;
+  --color-identity-deep: #082e38;
   --color-on-identity: #f4f8fa;
   --color-on-identity-muted: #c5d5dc;
   --color-on-identity-border: #8aa3ad;
@@ -23,6 +24,9 @@
   --color-focus: #0a5ea8;
   --color-disabled: #8a96a1;
   --color-disabled-bg: #d9e1e7;
+  --color-chart-1: #7eb8c4;
+  --color-chart-2: #c5d5dc;
+  --color-chart-3: #4d8f9c;
 
   --space-3xs: 0.125rem;
   --space-2xs: 0.25rem;
@@ -49,11 +53,12 @@
   --line-body: 1.5;
   --letter-mark: 0.04em;
 
-  --radius: 0.125rem;
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
   --border-width: 1px;
-  --shadow-raised: 0 1px 1px rgb(11 61 74 / 4%), 0 10px 28px rgb(11 61 74 / 6%);
+  --shadow-raised: 0 1px 2px rgb(11 61 74 / 6%), 0 12px 32px rgb(11 61 74 / 8%);
   --control-height: 44px;
   --focus-width: 2px;
   --content-width: 72rem;
-  --auth-width: 22.5rem;
+  --auth-width: 28rem;
 }

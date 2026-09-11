@@ -32,7 +32,7 @@ function formatarData(iso) {
 
 function renderizar(convites) {
   if (!convites.length) {
-    lista.innerHTML = "<p>Nenhum convite ainda.</p>";
+    lista.innerHTML = '<p class="cartao">Nenhum convite ainda.</p>';
     return;
   }
   const linhas = convites
@@ -47,7 +47,6 @@ function renderizar(convites) {
     )
     .join("");
   lista.innerHTML = `<div class="tabela-envolve"><table>
-    <caption>Convites recentes</caption>
     <thead>
       <tr>
         <th scope="col">Nome</th>

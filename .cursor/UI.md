@@ -29,6 +29,10 @@ Dashboard analítico: sóbrio, moderno, profissional, legível, acessível, com 
 
 Não deve parecer landing page comercial, template administrativo genérico, relatório de Word, interface excessivamente colorida nem conjunto de cards decorativos.
 
+Paleta só dos tokens (`--color-identity` e derivados). Não copiar roxo, rosa ou gradientes de templates de login.
+
+Cantos arredondados são o padrão: botões, inputs, selects, textareas, avisos, cartões, tabelas envolvidas e alvos de navegação usam `--radius` (ou `--radius-sm` em chips/avisos). Não reintroduzir cantos retos em controles novos. Painéis full-bleed (colunas do login, faixa do shell) permanecem retos na junção com a viewport.
+
 ---
 
 ## Semântica e teclado
@@ -67,9 +71,9 @@ Respeitar `prefers-reduced-motion`. Evitar animação decorativa ou movimento se
 
 ## Páginas desta etapa (MPA)
 
-Identidade visual: fundo frio (`--color-background`), superfície elevada no formulário, faixa `--color-identity` no shell autenticado. Sem bege, sem bordas pesadas em blocos, sem lista com bullets nos integrantes.
+Identidade visual: fundo frio (`--color-background` / `--color-surface`), cartões em `--color-surface-raised` com `--radius`, faixa `--color-identity` no shell autenticado. Sem bege, sem bordas pesadas em blocos, sem lista com bullets nos integrantes.
 
-Home: **login** com formulário primeiro no mobile (`order`); desktop em duas colunas (identidade + auth; integrantes em grade `dt`/`dd`). Sem cadastro e sem “esqueci senha”.
+Home: **login** em tela dividida. DOM: formulário à esquerda (`main.login-auth`, fundo `--color-surface`) e, em seguida, painel escuro (`aside.login-projeto`, `--color-identity`) com logo UNIVESP, metadados do PI, ilustração SVG de dashboard (KPI/linha/barras/anel) e integrantes em grade `dt`/`dd`. No mobile o formulário aparece primeiro porque vem antes no DOM. Desktop: coluna estreita de auth à esquerda, painel escuro à direita. A ilustração é decorativa (`aria-hidden`); números fictícios, não dados reais nem Plotly. Sem cadastro e sem “esqueci senha”. Classe utilitária `.cartao` para superfícies elevadas novas.
 
 Autenticadas: shell comum (`painel.html`, `convites.html`) — marca, navegação curta, usuário, sair.
 
@@ -120,7 +124,7 @@ Possível ordem: header compacto → filtros (período, setor, operador, cliente
 
 Fonte única: `frontend/src/styles/tokens.css`. Não espalhar hex no CSS de páginas.
 
-Categorias em uso: fundo, superfície, superfície elevada, identidade, interação (hover/active/disabled), texto, texto secundário, bordas, sucesso/alerta/erro, foco, espaçamento, tipografia, raio, sombra, altura de controle (`44px`).
+Categorias em uso: fundo, superfície, superfície elevada, identidade, interação (hover/active/disabled), texto, texto secundário, bordas, sucesso/alerta/erro, foco, espaçamento, tipografia, raio (`--radius` ≈ 0,75rem nos controles; `--radius-sm` ≈ 0,5rem), sombra, altura de controle (`44px`), cores de gráfico só para a ilustração de login (`--color-chart-*`).
 
 ---
 
