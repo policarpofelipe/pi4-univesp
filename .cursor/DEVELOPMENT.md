@@ -39,9 +39,9 @@ Não criar essas pastas só para "ficar igual ao plano". Criar quando a fase cor
 - Nomes claros; arquivos pequenos; uma responsabilidade por módulo.
 - Evitar classes vazias, camadas "enterprise" e dependências sem uso novo.
 - Commits pequenos e justificáveis.
-- Não alterar a stack. Não adicionar framework frontend. Não adicionar banco extra.
+- Não alterar a stack congelada. Não adicionar framework frontend (React/Vue/etc.). Não usar Node como backend. Não adicionar banco extra.
 
-Quando uma alteração for estrutural, consultar antes: `PROJECT.md`, `DECISIONS.md` e o impacto em backend, frontend, dados e deploy.
+Quando uma alteração for estrutural, consultar antes: `PROJECT.md`, `DECISIONS.md`, `UI.md` (se for interface) e o impacto em backend, frontend, dados e deploy.
 
 ---
 
@@ -136,13 +136,33 @@ Não versionar chave privada, `mcp.json` com senha nem o script de túnel no Git
 
 ## Frontend
 
-- HTML/CSS/JS no diretório `frontend/`.
-- Chamadas relativas a `/api/...` (o Apache faz o proxy). Não apontar o browser para `127.0.0.1:8000` em produção.
-- Plotly.js ainda não está incluído; adicionar na fase de dashboard.
-- Lógica analítica crítica permanece no backend.
+Stack congelada: Vanilla JS (ES Modules), HTML5, CSS próprio, Plotly.js. Toolchain: **Node.js 24 LTS**, **npm**, **Vite 8.x**. Detalhe visual/a11y: `UI.md`. Decisões: ADR-013 a ADR-016.
+
+Estado atual do código: só `frontend/index.html` (smoke test). Vite, `package.json` e Plotly **ainda não** foram inicializados. Não executar `npm create vite` nem instalar pacotes até a auditoria de ambiente autorizada (`ROADMAP.md`).
+
+Quando existir o projeto Vite:
+
+- chamadas relativas a `/api/...` (Apache faz o proxy). Não apontar o browser publicado para `127.0.0.1:8000`;
+- `package-lock.json` **versionado**; `node_modules/` e `dist/` **não** versionados (incluir no `.gitignore` na etapa de inicialização);
+- único package manager: npm;
+- JS modular em `src/`; lógica analítica crítica no backend;
+- em produção: `npm run build` → publicar o conteúdo de `dist/` no document root.
+
+### Toolchain de qualidade (aprovada, não instalada)
+
+| Camada | Ferramenta | Papel |
+|---|---|---|
+| JS | ESLint | análise estática |
+| JS | Prettier | formatação |
+| JS unitário | Vitest | quando houver lógica de frontend que justifique teste |
+| E2E | Playwright | etapa posterior |
+| A11y automatizada | axe-core (ou equivalente no Playwright) | apoio; **não** prova WCAG |
+| Python | pytest | testes de backend |
+
+Avaliação de acessibilidade combina ferramenta + teclado + foco + contraste + zoom + reflow + semântica + revisão humana.
 
 ---
 
 ## Testes
 
-Ainda não há testes. Quando existirem, priorizar partes críticas: conexão/configuração sem vazar segredo, montagem de filtros, regras de agregação e, mais tarde, ausência de leakage no pipeline de ML.
+Ainda não há testes. Ferramentas aprovadas: pytest (backend); Vitest e Playwright (frontend, depois). Priorizar partes críticas: conexão/configuração sem vazar segredo, montagem de filtros, regras de agregação, ausência de leakage no ML e, no cliente, estados de erro/loading e acessibilidade básica.

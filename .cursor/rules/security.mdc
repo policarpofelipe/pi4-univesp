@@ -17,6 +17,7 @@ A VPS é compartilhada. O PI não pode arriscar outros serviços.
 ## VPS
 
 - Não alterar Python 3.9 do sistema, MariaDB global, Apache de outros domínios ou serviços alheios.
+- Não instalar Node no sistema da VPS sem o plano da auditoria 0.2.
 - Backend roda como `flivocom`, não como root.
 - API permanece em localhost; publicação só via Apache `/api/*`.
 - Não acessar bancos de outros sistemas (inclusive MCPs MySQL que não sejam claramente `flivocom_pi4`).

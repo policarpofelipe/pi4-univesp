@@ -11,22 +11,26 @@ Detalhes de runtime: `DEPLOYMENT.md`. Decisões: `DECISIONS.md`.
 ```
 Navegador
     ↓
-HTML / CSS / JavaScript
+HTML + CSS + JavaScript (estáticos, gerados pelo Vite)
     ↓
 HTTP / HTTPS
     ↓
-Apache (reverse proxy)
-    ↓
-FastAPI (Uvicorn em 127.0.0.1:8000)
-    ↓
-Python 3.12
-    ↓
-SQLAlchemy / PyMySQL
-    ↓
-MariaDB 10.11
+Apache 2.4
+    ├── arquivos do frontend (document root)
+    └── /api/*  →  reverse proxy
+                      ↓
+                   FastAPI (Uvicorn em 127.0.0.1:8000)
+                      ↓
+                   Python 3.12
+                      ↓
+                   SQLAlchemy / PyMySQL
+                      ↓
+                   MariaDB 10.11
 ```
 
 O frontend solicita dados ao backend **durante o uso**. Filtros podem resultar em consultas ou reprocessamentos. Isso não implica retreinar ML a cada clique.
+
+Node.js e Vite **não** entram nesse fluxo em produção. São ferramentas de desenvolvimento e build. Node **não** substitui FastAPI.
 
 ---
 
@@ -46,22 +50,44 @@ Streamlit também foi descartado (ADR-004).
 
 ## Stack congelada
 
+### Backend e dados (produção)
+
 | Camada | Tecnologia |
 |---|---|
 | Banco | MariaDB 10.11 |
 | Backend / API | Python 3.12 + FastAPI |
 | ASGI | Uvicorn |
+| Execução persistente | systemd (`pi4-backend.service`) |
 | Análise | Pandas |
 | ML | scikit-learn |
 | Apoio numérico | NumPy, quando necessário |
 | Acesso a dados | SQLAlchemy + PyMySQL |
-| Frontend | HTML + CSS + JavaScript puro |
-| Visualizações | Plotly.js |
 | Configuração | python-dotenv / variáveis de ambiente |
-| Versionamento | Git + GitHub |
-| Hospedagem | VPS própria |
 | Servidor web | Apache 2.4 |
-| Reverse proxy | Apache → FastAPI |
+| Reverse proxy | Apache `/api/*` → FastAPI |
+
+### Frontend (código e produção)
+
+| Camada | Tecnologia |
+|---|---|
+| Linguagem | JavaScript moderno (ES Modules) |
+| Markup | HTML5 semântico |
+| Estilo | CSS próprio (tokens; ver `UI.md`) |
+| Visualizações | Plotly.js |
+| Resultado em produção | arquivos estáticos no document root Apache |
+
+### Frontend (somente desenvolvimento / build)
+
+| Ferramenta | Linha |
+|---|---|
+| Runtime de build | Node.js **24 LTS** |
+| Gerenciador | **npm** (único; sem Yarn/pnpm) |
+| Bundler / dev server | **Vite 8.x**, template Vanilla |
+| Comandos previstos | `npm install` · `npm run dev` · `npm run build` |
+
+Em produção: código em `frontend/` → `vite build` → `dist/` → Apache → navegador.
+
+Não usar, salvo nova ADR: React, Vue, Angular, Svelte, TypeScript, Bootstrap, Tailwind, Material UI, bibliotecas completas de componentes, Node como backend.
 
 O grupo chegou a citar MySQL; o servidor disponível usa MariaDB 10.11, e essa é a decisão oficial (ADR-003).
 
@@ -73,8 +99,9 @@ SQLAlchemy usa o dialect `mysql+pymysql`. Isso é compatível com MariaDB e **n�
 
 | Componente | Responsabilidade | O que não deve fazer |
 |---|---|---|
-| Frontend | Filtros, chamada a `/api/...`, KPIs, gráficos, loading e erro | Regras analíticas críticas; tratamento pesado de dados |
-| Apache | HTTPS, document root do frontend, proxy de `/api/*` | Lógica de negócio |
+| Frontend | Filtros, chamada a `/api/...`, KPIs, gráficos, loading e erro; build Vite | Regras analíticas críticas; tratamento pesado de dados; substituir FastAPI |
+| Node.js / npm / Vite | Dev server e geração de `dist/` | Processo de produção do backend; API |
+| Apache | HTTPS, document root dos estáticos, proxy de `/api/*` | Lógica de negócio |
 | FastAPI | Fronteira HTTP; endpoints pequenos e orientados ao dashboard | Expor credenciais, stack traces ou dumps da base inteira |
 | Python / Pandas | Preparação, EDA, feature engineering, transformações analíticas | Substituir SQL em filtros/joins/agregações simples |
 | scikit-learn | Treino/avaliação/inferência do problema de ML escolhido | "Score de IA" sem pergunta definida; treino a cada clique |
@@ -133,7 +160,32 @@ Confirmado na inspeção de 2026-09-10:
 | `backend/.env.example` | Variáveis `DB_*` (ver risco em `DEVELOPMENT.md`) |
 | `frontend/index.html` | Página de fumaça: consulta `/api/status` e `/api/status/banco` |
 
-Não existem ainda, no repositório, as pastas `sql/` e `ml/` citadas no planejamento inicial. O frontend ainda não inclui Plotly.js. Não há endpoints analíticos.
+Não existem ainda, no repositório, as pastas `sql/` e `ml/` citadas no planejamento inicial. O frontend ainda é um único `index.html` de fumaça: **sem** Vite, `package.json` ou Plotly.js. Isso é o estado do código, não a stack alvo (ADR-013). Não inicializar Vite nesta fase documental.
+
+---
+
+## Direção da pasta `frontend/` (não implementar agora)
+
+Estrutura conceitual futura; evoluir só com necessidade concreta:
+
+```
+frontend/
+├── index.html
+├── package.json
+├── package-lock.json
+├── vite.config.js
+└── src/
+    ├── main.js
+    ├── api/
+    ├── components/
+    ├── charts/
+    ├── styles/
+    └── utils/
+```
+
+JavaScript modular. Evitar `app.js` gigante, funções globais desnecessárias, lógica analítica importante no cliente, duplicação de chamadas à API e estilos inline.
+
+Normas visuais e WCAG: `UI.md`.
 
 ---
 

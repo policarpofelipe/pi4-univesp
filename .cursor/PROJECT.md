@@ -2,7 +2,7 @@
 
 Documento de identidade e escopo. Fonte de verdade conceitual do projeto.
 
-Leitura complementar: `ARCHITECTURE.md`, `DATA.md`, `MACHINE_LEARNING.md`, `DEVELOPMENT.md`, `DEPLOYMENT.md`, `ROADMAP.md`, `DECISIONS.md`.
+Leitura complementar: `ARCHITECTURE.md`, `DATA.md`, `MACHINE_LEARNING.md`, `DEVELOPMENT.md`, `DEPLOYMENT.md`, `ROADMAP.md`, `DECISIONS.md`, `UI.md`.
 
 ---
 
@@ -98,14 +98,16 @@ Dentro do escopo:
 - inventário e modelagem dos dados reais de suporte;
 - persistência analítica em MariaDB;
 - API FastAPI para o dashboard;
-- frontend HTML/CSS/JS com Plotly.js;
+- frontend HTML/CSS/JS (Vanilla, ES Modules) com Vite e Plotly.js;
 - análises estatísticas e filtros combináveis;
 - um problema de ML justificado pelos dados, com scikit-learn;
 - interpretação acadêmica dos resultados.
 
 Fora do escopo, salvo solicitação explícita e necessidade concreta:
 
-- React, Node.js, TypeScript;
+- React, Vue, Angular, Svelte, TypeScript;
+- Bootstrap, Tailwind, Material UI e bibliotecas completas de componentes;
+- Node.js como **backend** (Node/npm/Vite são só toolchain de frontend);
 - Streamlit;
 - Redis, Kafka, Spark, Hadoop;
 - Kubernetes, microsserviços, filas, WebSockets;
@@ -118,11 +120,19 @@ Fora do escopo, salvo solicitação explícita e necessidade concreta:
 
 ## Princípios
 
+O PI é acadêmico de Engenharia de Computação (UNIVESP). Cada tecnologia deve atender, ao mesmo tempo:
+
+1. aderência à formação (programação, banco, web, APIs, engenharia de software, IHC, visualização, análise de dados, ML);
+2. uso atual e profissional;
+3. complexidade proporcional ao problema.
+
 Priorizar clareza, rastreabilidade, código compreensível pelo grupo e separação de responsabilidades.
+
+**Complexidade essencial > complexidade acidental.** Não introduzir tecnologia só para parecer sofisticado. O grupo deve conseguir explicar cada componente na banca.
 
 Quando houver uma solução simples e correta e outra sofisticada sem benefício concreto, usar a simples.
 
-Não introduzir complexidade, biblioteca ou abstração sem justificar a necessidade acadêmica ou operacional.
+Interface: `UI.md` (WCAG 2.2 AA + padrões visuais internos).
 
 ---
 

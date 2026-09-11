@@ -34,6 +34,10 @@ A VPS é compartilhada com outros sistemas reais. Isolamento é requisito, não 
 
 Não unificar silenciosamente repo e runtime.
 
+Quando o Vite existir, o document root deve receber o **resultado do build** (`dist/`), não `node_modules/` nem um processo Node em produção. Node.js não é daemon do PI. O processo persistente continua sendo só o FastAPI via systemd.
+
+A presença de Node 24 LTS na VPS **ainda não foi auditada**. Não instalar nesta fase.
+
 ---
 
 ## Backend (Uvicorn + systemd)
@@ -97,6 +101,7 @@ O frontend publicado ainda é o smoke test do repositório (títulos e checagem 
 ## Isolamento — o que agentes não devem fazer
 
 - alterar Python 3.9 do sistema;
+- instalar Node/npm de forma que altere o cPanel ou outros sítios (a forma segura, se necessária, virá da auditoria 0.2);
 - substituir MariaDB global;
 - mudar VirtualHosts de outros domínios;
 - usar root na aplicação;

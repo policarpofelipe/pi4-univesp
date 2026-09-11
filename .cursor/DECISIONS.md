@@ -54,6 +54,8 @@ Status: `aceita` | `descartada` | `aberta`.
 - **Por quê:** clareza acadêmica; complexidade só com necessidade concreta.
 - **Consequência:** o dashboard precisa ser bem estruturado em JS simples, não uma SPA enterprise.
 
+Atualização (2026-09-11): Vanilla JS e Plotly permanecem. **Node.js passou a ser permitido somente como toolchain de frontend** (ADR-013). A proibição de React/TypeScript/frameworks continua (ADR-014).
+
 ---
 
 ## ADR-006 — Repositório separado dos diretórios de runtime
@@ -126,6 +128,48 @@ Status: `aceita` | `descartada` | `aberta`.
 
 ---
 
+## ADR-013 — Node.js 24 LTS + npm + Vite 8.x como toolchain de frontend
+
+- **Status:** aceita (congelada)
+- **Contexto:** o frontend precisa de ES Modules, organização modular e build reproduzível, sem virar SPA.
+- **Decisão:** Node.js 24 LTS, npm (único gerenciador) e Vite 8.x com template Vanilla. Em produção só saem estáticos (`dist/` → Apache). Node não substitui FastAPI.
+- **Por quê:** ambiente moderno, ESM, build otimizado, `npm install` / `npm run dev` / `npm run build`, sem exigir framework. LTS em vez de Node Current.
+- **Consequência:** a próxima etapa é auditar Node/npm na VPS e no desenvolvimento local **antes** de `npm create vite` ou instalar Plotly. Não instalar o Node do sistema de forma que quebre o cPanel.
+
+---
+
+## ADR-014 — Permanência em Vanilla JS; sem React/TypeScript
+
+- **Status:** aceita (congelada); refina ADR-005
+- **Contexto:** frameworks e TypeScript aumentariam custo de explicação na banca sem necessidade atual.
+- **Decisão:** HTML5 + CSS próprio + JavaScript moderno (ES Modules). Não usar React, Vue, Angular, Svelte, TypeScript, Bootstrap, Tailwind, Material UI nem bibliotecas completas de componentes.
+- **Por quê:** complexidade essencial; o grupo deve defender cada peça.
+- **Consequência:** dashboard em JS modular, não em SPA enterprise. Plotly.js continua a biblioteca oficial de gráficos.
+
+---
+
+## ADR-015 — WCAG 2.2 nível AA como referência de interface
+
+- **Status:** aceita (congelada)
+- **Contexto:** o PI inclui IHC e visualização; a interface será usada e apresentada.
+- **Decisão:** desenvolver a UI tendo como referência os critérios de conformidade WCAG 2.2 nível AA (W3C/WAI). Documento central: `UI.md`. Não declarar “100% acessível”.
+- **Por quê:** padrão internacional avaliável; separa requisito normativo de recomendações ergonômicas internas (ex.: alvo 40–44 px, fonte ≈ 16px).
+- **Consequência:** todo agente de frontend aplica semântica, teclado, contraste, reflow e gráficos com alternativa textual desde a implementação. Ferramentas automáticas não bastam como prova.
+
+---
+
+## ADR-016 — Toolchain de qualidade aprovada, ainda não instalada
+
+- **Status:** aceita (planejada)
+- **Contexto:** precisa haver ferramentas oficiais sem instalá-las antes da auditoria de ambiente.
+- **Decisão:** ESLint, Prettier, Vitest, Playwright, axe-core (ou equivalente) no frontend; pytest no backend. Versionar `package-lock.json`; não versionar `node_modules/` nem `dist/`.
+- **Por quê:** qualidade reproduzível, proporcional ao PI.
+- **Consequência:** instalação só depois da auditoria Node/npm. Não misturar Yarn/pnpm.
+
+---
+
+---
+
 ## Divergências entre o briefing e o repositório
 
 Registradas na inspeção de 2026-09-10. A falha de credencial no exemplo foi corrigida no working tree (ADR-012); as demais permanecem só como registro.
@@ -136,7 +180,7 @@ Registradas na inspeção de 2026-09-10. A falha de credencial no exemplo foi co
 | Estrutura "aproximadamente" com essas pastas | Só `backend/` e `frontend/` | Repositório |
 | `.env.example` sem segredo | Working tree sanitizado (`altere-esta-senha`); valor antigo ainda no histórico até a rotação na VPS | Repositório + ADR-012 |
 | Clone em `/home/flivocom/pi4-univesp` | Clone inspecionado em Windows `c:\dev\pi4-univesp\pi4-univesp` | Duas cópias legítimas (VPS vs máquina local) |
-| Dashboard com Plotly | `index.html` é smoke test, sem Plotly | Repositório (esperado para o estágio atual) |
+| Dashboard com Plotly | `index.html` é smoke test, sem Plotly/Vite | Repositório (esperado); alvo em ADR-013 |
 | `GET /api/status/banco` validado | Confirmado pelo grupo; timeout nesta inspeção remota | Ambiente prévio vs tentativa de 2026-09-10 |
 | Python 3.12 | Código devolve literal `"3.12"`; ambiente informado é 3.12.14 | Código + ambiente |
 

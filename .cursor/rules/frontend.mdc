@@ -1,22 +1,31 @@
 ---
-description: Frontend HTML/CSS/JS e Plotly; sem framework
+description: Frontend Vanilla + Vite + Plotly; consultar UI.md; WCAG 2.2 AA
 globs: frontend/**
 alwaysApply: false
 ---
 
 # PI4 — frontend
 
-Ler `.cursor/ARCHITECTURE.md`. Stack: HTML, CSS, JavaScript puro, Plotly.js. Sem React/Node/TypeScript/Streamlit.
+Antes de alterar UI: `.cursor/UI.md` e `.cursor/ARCHITECTURE.md`.
+
+## Stack
+
+Vanilla JS (ES Modules), HTML5, CSS próprio, Plotly.js. Build: Node 24 LTS + npm + Vite 8.x. Sem React/Vue/Angular/Svelte/TypeScript/Bootstrap/Tailwind/MUI. Node não é backend.
 
 ## Comportamento
 
-- Chamar `/api/...` com URLs relativas (Apache faz o proxy). Não usar `127.0.0.1:8000` na página publicada.
-- Filtros combináveis; atualizar KPIs/gráficos a partir do JSON.
-- Estados de loading e erro de API.
-- Cada gráfico deve responder uma pergunta de `.cursor/PROJECT.md`. Sem redundância.
+- `/api/...` relativo (Apache faz proxy). Não usar `127.0.0.1:8000` na página publicada.
+- Filtros combináveis; KPIs/gráficos a partir do JSON; loading e erro.
+- Cada gráfico responde uma pergunta de `PROJECT.md`.
+- Lógica analítica crítica no backend.
+- Reutilizar tokens CSS; não inventar cor/spacing local solto.
 
-## Limite
+## Acessibilidade
 
-Regras analíticas críticas ficam no backend. JS não recalcula a análise oficial.
+Referência normativa: **WCAG 2.2 AA** (não declarar 100% acessível).
 
-O `index.html` atual é smoke test de ambiente. Não transformar em dashboard completo fora da fase 4 do `ROADMAP.md`.
+Padrões internos (não são a norma): alvo primário ~40–44 px; foco ~2px / 3:1; fonte ~16px.
+
+Obrigatório na implementação: `lang="pt-BR"`; HTML semântico; teclado e foco visível; contraste; cor nunca como único significado; `prefers-reduced-motion`; label em inputs.
+
+O `index.html` atual é smoke test. Não inicializar Vite nem o dashboard fora da fase autorizada no `ROADMAP.md`.

@@ -7,25 +7,24 @@ alwaysApply: true
 
 Projeto Integrador 4 (UNIVESP): dashboard acadêmico de análise de chamados de suporte. Não é produto SaaS.
 
-Antes de alteração estrutural, ler `.cursor/PROJECT.md`, `.cursor/DECISIONS.md` e `.cursor/ROADMAP.md`. Não reinventar a arquitetura.
+Antes de alteração estrutural, ler `.cursor/PROJECT.md`, `.cursor/DECISIONS.md` e `.cursor/ROADMAP.md`. UI: `.cursor/UI.md`. Não reinventar a arquitetura.
 
 ## Stack congelada
 
-MariaDB 10.11 · Python 3.12 + FastAPI + Uvicorn · Pandas · scikit-learn · SQLAlchemy + PyMySQL · HTML/CSS/JS · Plotly.js · Apache na VPS.
+MariaDB 10.11 · Python 3.12 + FastAPI + Uvicorn + systemd · Pandas · scikit-learn · SQLAlchemy + PyMySQL · HTML/CSS/JS Vanilla (ESM) · Plotly.js · Vite 8.x · Node.js 24 LTS + npm (só build) · Apache.
 
-Não introduzir, sem pedido explícito: React, Node, TypeScript, Streamlit, Redis, Kafka, Spark, Kubernetes, microsserviços, filas, WebSockets, segundo banco.
+Não introduzir, sem ADR nova: React, Vue, Angular, Svelte, TypeScript, Bootstrap, Tailwind, Streamlit, Redis, Kafka, Spark, Kubernetes, filas, WebSockets, segundo banco, Node como backend.
 
 ## Arquitetura
 
-Browser → Apache → FastAPI (`127.0.0.1:8000`) → SQLAlchemy → MariaDB.
+Browser → Apache (estáticos do `vite build` + `/api/*`) → FastAPI (`127.0.0.1:8000`) → MariaDB.
 
-Descartado: dataset estático em GitHub Pages.
+Node/Vite não rodam a API. Descartado: GitHub Pages estático; Streamlit.
 
-Repo ≠ runtime. Não misturar `pi4-univesp` com `/home/flivocom/pi4-backend` nem com o document root.
+Repo ≠ runtime.
 
 ## Conduta
 
-- Preferir solução simples e explicável na banca.
-- Hipóteses operacionais (almoço, após 20h, sábado) são para testar, não para assumir.
-- Correlação ≠ causalidade.
-- Não criar tabelas, dashboard, ML, dados fictícios nem mudanças de infra fora da fase autorizada em `ROADMAP.md`.
+- Complexidade essencial > acidental; explicável na banca.
+- Hipóteses operacionais são para testar, não assumir. Correlação ≠ causalidade.
+- Não criar tabelas, dashboard, ML, `npm create vite` nem mudanças de infra fora da fase autorizada em `ROADMAP.md`.
