@@ -98,6 +98,25 @@ Não copiar o valor antigo para documentação, chat ou novos arquivos. Não ree
 
 ---
 
+## Túnel SSH local (Windows)
+
+O MCP da Reduz fala com MySQL remoto. O do PI4 não: `flivocom_pi4app` só aceita `localhost` na VPS. Por isso o Cursor neste Windows usa `127.0.0.1:3307` via túnel SSH.
+
+Isso é configuração da **máquina do desenvolvedor**, não do repositório e não da VPS.
+
+| Item | Onde |
+|---|---|
+| Chave privada | `%USERPROFILE%\.ssh\id_ed25519_pi4` |
+| Host SSH | `pi4-vps` em `%USERPROFILE%\.ssh\config` |
+| Watchdog do túnel | `%USERPROFILE%\.cursor\pi4-ssh-tunnel.ps1` |
+| Log | `%USERPROFILE%\.cursor\pi4-ssh-tunnel.log` |
+| Agendamento | Tarefa `PI4 SSH Tunnel` (no logon do Windows) |
+| MCP | `pi4-mysql-readonly` em `%USERPROFILE%\.cursor\mcp.json` |
+
+Não versionar chave privada, `mcp.json` com senha nem o script de túnel no Git do PI4.
+
+---
+
 ## Git / GitHub
 
 - Remoto: `https://github.com/policarpofelipe/pi4-univesp.git`
