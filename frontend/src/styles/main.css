@@ -290,14 +290,6 @@ a:hover {
   fill: var(--color-identity-deep);
 }
 
-.ilust-rotulo {
-  fill: var(--color-on-identity-muted);
-}
-
-.ilust-valor {
-  fill: var(--color-on-identity);
-}
-
 .ilust-linha {
   stroke: var(--color-chart-1);
 }

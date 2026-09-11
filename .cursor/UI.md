@@ -73,7 +73,7 @@ Respeitar `prefers-reduced-motion`. Evitar animação decorativa ou movimento se
 
 Identidade visual: fundo frio (`--color-background` / `--color-surface`), cartões em `--color-surface-raised` com `--radius`, faixa `--color-identity` no shell autenticado. Sem bege, sem bordas pesadas em blocos, sem lista com bullets nos integrantes.
 
-Home: **login** em tela dividida. DOM: formulário à esquerda (`main.login-auth`, fundo `--color-surface`) e, em seguida, painel escuro (`aside.login-projeto`, `--color-identity`) com logo UNIVESP, metadados do PI, ilustração SVG de dashboard (KPI/linha/barras/anel) e integrantes em grade `dt`/`dd`. No mobile o formulário aparece primeiro porque vem antes no DOM. Desktop: coluna estreita de auth à esquerda, painel escuro à direita. A ilustração é decorativa (`aria-hidden`); números fictícios, não dados reais nem Plotly. Sem cadastro e sem “esqueci senha”. Classe utilitária `.cartao` para superfícies elevadas novas.
+Home: **login** em tela dividida. DOM: formulário à esquerda (`main.login-auth`, fundo `--color-surface`) e, em seguida, painel escuro (`aside.login-projeto`, `--color-identity`) com logo UNIVESP, metadados do PI, ilustração SVG de dashboard (linha/barras/anel) e integrantes em grade `dt`/`dd`. No mobile o formulário aparece primeiro porque vem antes no DOM. Desktop: coluna estreita de auth à esquerda, painel escuro à direita. A ilustração é decorativa (`aria-hidden`); não são dados reais nem Plotly. Sem cadastro e sem “esqueci senha”. Classe utilitária `.cartao` para superfícies elevadas novas.
 
 Autenticadas: shell comum (`painel.html`, `convites.html`) — marca, navegação curta, usuário, sair.
 
