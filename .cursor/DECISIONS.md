@@ -134,7 +134,7 @@ Atualização (2026-09-11): Vanilla JS e Plotly permanecem. **Node.js passou a s
 - **Contexto:** o frontend precisa de ES Modules, organização modular e build reproduzível, sem virar SPA.
 - **Decisão:** Node.js 24 LTS, npm (único gerenciador) e Vite 8.x com template Vanilla. Em produção só saem estáticos (`dist/` → Apache). Node não substitui FastAPI.
 - **Por quê:** ambiente moderno, ESM, build otimizado, `npm install` / `npm run dev` / `npm run build`, sem exigir framework. LTS em vez de Node Current.
-- **Consequência:** toolchain no repositório (`frontend/`); produção continua Apache + estáticos. Node na VPS: 24.x via NVM do `flivocom`, sem alterar Node do cPanel. Build ainda não publicado.
+- **Consequência:** toolchain no repositório (`frontend/`); produção continua Apache + estáticos. Node na VPS: 24.x via NVM do `flivocom`, sem alterar Node do cPanel. Publicação do `dist/` via workflow de frontend (ADR-017).
 
 ---
 
@@ -167,6 +167,14 @@ Atualização (2026-09-11): Vanilla JS e Plotly permanecem. **Node.js passou a s
 - **Consequência:** instalação só depois da auditoria Node/npm. Não misturar Yarn/pnpm.
 
 ---
+
+## ADR-017 — CI/CD só do frontend, via SSH na VPS
+
+- **Status:** aceita
+- **Contexto:** o document root precisa receber `dist/` sem publicar à mão e sem tocar no backend.
+- **Decisão:** GitHub Actions em `main` (e `workflow_dispatch`) conecta por SSH com secrets `VPS_*`, valida com `npm run check` na VPS e só então faz rsync para `/home/flivocom/pi4.flivo.com.br/`. Sem `reset --hard`, sem actions SSH de terceiros, sem `StrictHostKeyChecking=no`. Concurrency `deploy-frontend` sem cancelar job em andamento.
+- **Por quê:** um único deploy por vez; falha se lint/build ou o git local divergir; Apache/systemd/MariaDB permanecem fora.
+- **Consequência:** backend continua manual. O clone em `/home/flivocom/pi4-univesp` precisa estar limpo e conseguir `pull --ff-only`. `rsync` e NVM 24 são requisitos da VPS.
 
 ---
 

@@ -25,18 +25,33 @@ A VPS é compartilhada com outros sistemas reais. Isolamento é requisito, não 
 
 ---
 
-## Processo atual (manual)
+## Processo de deploy
 
-1. Código vive no Git (`policarpofelipe/pi4-univesp`).
-2. Runtime backend e runtime frontend são diretórios **separados**.
-3. Não há, neste momento, processo formal/automatizado de copiar o repositório para os runtimes.
-4. Não criar CI/CD complexo agora. Um deploy simples e seguro poderá ser definido depois.
+Repo, runtime backend e document root do frontend **permanecem separados**.
 
-Não unificar silenciosamente repo e runtime.
+### Frontend (automatizado)
+
+Push em `main` (ou `workflow_dispatch`) dispara `.github/workflows/deploy-frontend.yml`.
+
+O runner GitHub **não** constrói o frontend. Ele abre SSH na VPS (chave em Repository Secrets) e, como `flivocom`:
+
+1. carrega NVM e exige Node 24;
+2. em `/home/flivocom/pi4-univesp`, recusa árvore suja, `git fetch` + `checkout main` + `pull --ff-only` (sem `reset --hard`);
+3. em `frontend/`: `npm ci` e `npm run check` (lint, format:check, build);
+4. só então `rsync` de `frontend/dist/` para `/home/flivocom/pi4.flivo.com.br/`, preservando `.well-known/`;
+5. smoke: `curl` em `/` e `/api/status`.
+
+Secrets: `VPS_HOST`, `VPS_USER`, `VPS_PORT`, `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`. Não usar `StrictHostKeyChecking=no`.
+
+Não inicia Vite, não mexe em Apache, systemd, FastAPI nem MariaDB.
+
+### Backend (ainda manual)
+
+O runtime `/home/flivocom/pi4-backend` **não** entra neste workflow.
 
 Quando o Vite existir, o document root deve receber o **resultado do build** (`dist/`), não `node_modules/` nem um processo Node em produção. Node.js não é daemon do PI. O processo persistente continua sendo só o FastAPI via systemd.
 
-A presença de Node 24 LTS na VPS foi validada pelo grupo: **24.21.0** via NVM 0.40.7 do usuário `flivocom`. Não alterar Node global/cPanel. O build Vite ainda **não** foi publicado no document root.
+Node na VPS: **24.21.0** via NVM 0.40.7 do usuário `flivocom`. Não alterar Node global/cPanel.
 
 ---
 
