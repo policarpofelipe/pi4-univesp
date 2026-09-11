@@ -61,8 +61,21 @@ jobs:
           VPS_PORT: ${{ secrets.VPS_PORT }}
         run: |
           set -euo pipefail
-          if [ -z "${VPS_HOST}" ] || [ -z "${VPS_USER}" ] || [ -z "${VPS_PORT}" ]; then
-            echo "Secrets VPS_HOST, VPS_USER ou VPS_PORT ausentes."
+          missing=0
+          if [ -z "${VPS_HOST}" ]; then
+            echo "Secret VPS_HOST ausente ou vazio."
+            missing=1
+          fi
+          if [ -z "${VPS_USER}" ]; then
+            echo "Secret VPS_USER ausente ou vazio."
+            missing=1
+          fi
+          if [ -z "${VPS_PORT}" ]; then
+            echo "Secret VPS_PORT ausente ou vazio."
+            missing=1
+          fi
+          if [ "$missing" -ne 0 ]; then
+            echo "Crie Repository secrets (Settings → Secrets and variables → Actions), não Environment secrets, a menos que o job declare environment."
             exit 1
           fi
           ssh -i "${HOME}/.ssh/deploy_key" \

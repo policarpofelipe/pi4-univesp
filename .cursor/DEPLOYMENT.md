@@ -41,7 +41,17 @@ O runner GitHub **não** constrói o frontend. Ele abre SSH na VPS (chave em Rep
 4. só então `rsync` de `frontend/dist/` para `/home/flivocom/pi4.flivo.com.br/`, preservando `.well-known/`;
 5. smoke: `curl` em `/` e `/api/status`.
 
-Secrets: `VPS_HOST`, `VPS_USER`, `VPS_PORT`, `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`. Não usar `StrictHostKeyChecking=no`.
+Secrets (GitHub → Settings → Secrets and variables → Actions → **Repository** secrets):
+
+| Secret | Conteúdo |
+|---|---|
+| `VPS_HOST` | hostname ou IP do SSH (o mesmo que consta em `VPS_KNOWN_HOSTS`) |
+| `VPS_USER` | usuário SSH (`flivocom`) |
+| `VPS_PORT` | porta SSH, em geral `22` |
+| `VPS_SSH_KEY` | chave privada da conta de deploy (PEM, com quebras de linha reais) |
+| `VPS_KNOWN_HOSTS` | linha(s) de `known_hosts` desse host |
+
+Não usar Environment secrets sem declarar `environment:` no job — o workflow não lê isso. Não usar `StrictHostKeyChecking=no`.
 
 Não inicia Vite, não mexe em Apache, systemd, FastAPI nem MariaDB.
 
