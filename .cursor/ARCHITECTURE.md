@@ -158,15 +158,13 @@ Confirmado na inspeção de 2026-09-10:
 | `backend/banco.py` | Engine SQLAlchemy + `testar_conexao()` (`SELECT DATABASE(), VERSION()`) |
 | `backend/requirements.txt` | Freeze da stack, incluindo Pandas e scikit-learn ainda não usados no código |
 | `backend/.env.example` | Variáveis `DB_*` (ver risco em `DEVELOPMENT.md`) |
-| `frontend/index.html` | Página de fumaça: consulta `/api/status` e `/api/status/banco` |
+| `frontend/` | Vite 8 + Vanilla JS: status de `/api/status` e `/api/status/banco` |
 
-Não existem ainda, no repositório, as pastas `sql/` e `ml/` citadas no planejamento inicial. O frontend ainda é um único `index.html` de fumaça: **sem** Vite, `package.json` ou Plotly.js. Isso é o estado do código, não a stack alvo (ADR-013). Não inicializar Vite nesta fase documental.
+Não existem ainda, no repositório, as pastas `sql/` e `ml/`. Plotly está em `package.json` e ainda não é usado em gráfico. O build **não** está publicado no document root.
 
 ---
 
-## Direção da pasta `frontend/` (não implementar agora)
-
-Estrutura conceitual futura; evoluir só com necessidade concreta:
+## Estrutura atual de `frontend/`
 
 ```
 frontend/
@@ -174,13 +172,17 @@ frontend/
 ├── package.json
 ├── package-lock.json
 ├── vite.config.js
+├── eslint.config.js
+├── .nvmrc
+├── .env.example
+├── .prettierignore
 └── src/
     ├── main.js
     ├── api/
-    ├── components/
-    ├── charts/
-    ├── styles/
-    └── utils/
+    │   └── client.js
+    └── styles/
+        ├── tokens.css
+        └── main.css
 ```
 
 JavaScript modular. Evitar `app.js` gigante, funções globais desnecessárias, lógica analítica importante no cliente, duplicação de chamadas à API e estilos inline.

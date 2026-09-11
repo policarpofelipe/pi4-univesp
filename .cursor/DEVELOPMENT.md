@@ -4,32 +4,16 @@ Convenções para trabalhar no repositório. Infraestrutura de produção: `DEPL
 
 ---
 
-## Estrutura real do repositório (inspeção 2026-09-10)
-
-Único commit: `18319c5` — `Estrutura inicial do PI4`. Branch `main`, alinhada a `origin/main`.
+## Estrutura do repositório
 
 ```
 pi4-univesp/
 ├── .gitignore
 ├── backend/
-│   ├── app.py
-│   ├── banco.py
-│   ├── requirements.txt
-│   └── .env.example
-└── frontend/
-    └── index.html
+└── frontend/          ← Vite 8 (ver estrutura em ARCHITECTURE.md)
 ```
 
-Não existem no repositório, apesar do planejamento inicial:
-
-- `sql/`
-- `ml/`
-- `README.md` na raiz
-- testes automatizados
-- CSS/JS separados
-- Plotly.js
-
-Não criar essas pastas só para "ficar igual ao plano". Criar quando a fase correspondente precisar delas.
+Pastas `sql/` e `ml/` continuam ausentes de propósito. `README.md` na raiz ainda não existe.
 
 ---
 
@@ -138,26 +122,38 @@ Não versionar chave privada, `mcp.json` com senha nem o script de túnel no Git
 
 Stack congelada: Vanilla JS (ES Modules), HTML5, CSS próprio, Plotly.js. Toolchain: **Node.js 24 LTS**, **npm**, **Vite 8.x**. Detalhe visual/a11y: `UI.md`. Decisões: ADR-013 a ADR-016.
 
-Estado atual do código: só `frontend/index.html` (smoke test). Vite, `package.json` e Plotly **ainda não** foram inicializados. Não executar `npm create vite` nem instalar pacotes até a auditoria de ambiente autorizada (`ROADMAP.md`).
+Estado do código: Vite 8, npm, ESLint, Prettier e `plotly.js-dist-min` estão no `frontend/`. A tela atual continua sendo a prova de `/api/status` e `/api/status/banco` (não o dashboard). Plotly está nas dependências e **não** é importado nesta página, para não inflar o bundle antes dos gráficos.
 
-Quando existir o projeto Vite:
+Comandos (dentro de `frontend/`):
 
-- chamadas relativas a `/api/...` (Apache faz o proxy). Não apontar o browser publicado para `127.0.0.1:8000`;
-- `package-lock.json` **versionado**; `node_modules/` e `dist/` **não** versionados (incluir no `.gitignore` na etapa de inicialização);
+```
+npm ci
+npm run dev
+npm run build
+npm run lint
+npm run format
+npm run format:check
+npm run check
+```
+
+- chamadas relativas a `/api/...` (Apache em produção; proxy Vite só em `npm run dev`, alvo `VITE_API_PROXY_TARGET` ou `http://127.0.0.1:8000`);
+- `package-lock.json` versionado; `node_modules/` e `dist/` no `.gitignore`;
 - único package manager: npm;
 - JS modular em `src/`; lógica analítica crítica no backend;
-- em produção: `npm run build` → publicar o conteúdo de `dist/` no document root.
+- em produção: `npm run build` → publicar o conteúdo de `dist/` no document root (**ainda não publicado**).
 
-### Toolchain de qualidade (aprovada, não instalada)
+Node local observado nesta máquina: 24.16.0. VPS validada: Node 24.21.0 via NVM do usuário `flivocom`. Não alterar Node global/cPanel.
 
-| Camada | Ferramenta | Papel |
+### Toolchain de qualidade
+
+| Camada | Ferramenta | Situação |
 |---|---|---|
-| JS | ESLint | análise estática |
-| JS | Prettier | formatação |
-| JS unitário | Vitest | quando houver lógica de frontend que justifique teste |
-| E2E | Playwright | etapa posterior |
-| A11y automatizada | axe-core (ou equivalente no Playwright) | apoio; **não** prova WCAG |
-| Python | pytest | testes de backend |
+| JS | ESLint | Configurado (`eslint.config.js`) |
+| JS | Prettier | Configurado |
+| JS unitário | Vitest | Aprovado, **não** instalado |
+| E2E | Playwright | Aprovado, **não** instalado |
+| A11y automatizada | axe-core | Aprovado, **não** instalado |
+| Python | pytest | Aprovado, **não** instalado |
 
 Avaliação de acessibilidade combina ferramenta + teclado + foco + contraste + zoom + reflow + semântica + revisão humana.
 

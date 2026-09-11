@@ -134,7 +134,7 @@ Atualização (2026-09-11): Vanilla JS e Plotly permanecem. **Node.js passou a s
 - **Contexto:** o frontend precisa de ES Modules, organização modular e build reproduzível, sem virar SPA.
 - **Decisão:** Node.js 24 LTS, npm (único gerenciador) e Vite 8.x com template Vanilla. Em produção só saem estáticos (`dist/` → Apache). Node não substitui FastAPI.
 - **Por quê:** ambiente moderno, ESM, build otimizado, `npm install` / `npm run dev` / `npm run build`, sem exigir framework. LTS em vez de Node Current.
-- **Consequência:** a próxima etapa é auditar Node/npm na VPS e no desenvolvimento local **antes** de `npm create vite` ou instalar Plotly. Não instalar o Node do sistema de forma que quebre o cPanel.
+- **Consequência:** toolchain no repositório (`frontend/`); produção continua Apache + estáticos. Node na VPS: 24.x via NVM do `flivocom`, sem alterar Node do cPanel. Build ainda não publicado.
 
 ---
 

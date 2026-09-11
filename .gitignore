@@ -22,3 +22,9 @@ data/private/
 
 # Modelos gerados
 models/
+
+# Frontend (Vite)
+node_modules/
+dist/
+.env.local
+.env.*.local

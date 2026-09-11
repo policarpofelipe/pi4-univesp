@@ -1,51 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PI4 UNIVESP</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PI4 UNIVESP — Status do ambiente</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
 
-<body>
+    <header class="app-header">
+      <p>Projeto Integrador 4 — UNIVESP</p>
+      <h1>Análise de Dados do Suporte Técnico</h1>
+    </header>
 
-    <h1>PI4 UNIVESP</h1>
-    <p>Dashboard de Análise do Suporte Técnico</p>
+    <main id="conteudo" class="app-main">
+      <section aria-labelledby="titulo-status">
+        <h2 id="titulo-status">Status do ambiente</h2>
+        <p class="intro">
+          Verificação da API FastAPI e da conexão com o MariaDB. Esta tela ainda
+          não é o dashboard analítico.
+        </p>
 
-    <h2>Status do ambiente</h2>
+        <dl>
+          <div class="status-list">
+            <div class="status-item" id="item-backend" data-estado="carregando">
+              <dt id="rotulo-backend">Backend</dt>
+              <dd
+                id="backend"
+                aria-live="polite"
+                aria-labelledby="rotulo-backend"
+              >
+                Carregando — verificando backend…
+              </dd>
+            </div>
+            <div class="status-item" id="item-banco" data-estado="carregando">
+              <dt id="rotulo-banco">Banco de dados</dt>
+              <dd id="banco" aria-live="polite" aria-labelledby="rotulo-banco">
+                Carregando — verificando banco…
+              </dd>
+            </div>
+          </div>
+        </dl>
 
-    <div id="backend">
-        Verificando backend...
-    </div>
+        <button type="button" class="botao" id="atualizar-status">
+          Atualizar status
+        </button>
+      </section>
+    </main>
 
-    <div id="banco">
-        Verificando banco...
-    </div>
-
-    <script>
-        async function verificarAmbiente() {
-            try {
-                const respostaBackend = await fetch('/api/status');
-                const backend = await respostaBackend.json();
-
-                document.getElementById('backend').textContent =
-                    `Backend: ${backend.status} | ${backend.backend} | Python ${backend.python}`;
-
-                const respostaBanco = await fetch('/api/status/banco');
-                const banco = await respostaBanco.json();
-
-                document.getElementById('banco').textContent =
-                    `Banco: ${banco.status} | ${banco.servidor} | ${banco.versao}`;
-
-            } catch (erro) {
-                document.getElementById('backend').textContent =
-                    'Erro ao acessar a API';
-
-                console.error(erro);
-            }
-        }
-
-        verificarAmbiente();
-    </script>
-
-</body>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

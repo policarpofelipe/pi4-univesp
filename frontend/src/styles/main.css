@@ -1,0 +1,146 @@
+@import "./tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-md);
+  top: -4rem;
+  z-index: 10;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  min-height: 44px;
+}
+
+.skip-link:focus {
+  top: var(--space-md);
+}
+
+.app-header,
+.app-main {
+  width: min(100% - var(--space-lg), var(--content-width));
+  margin-inline: auto;
+}
+
+.app-header {
+  padding-block: var(--space-lg) var(--space-md);
+}
+
+.app-header p {
+  margin: 0 0 var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 650;
+}
+
+.app-main {
+  padding-bottom: var(--space-xl);
+}
+
+.app-main h2 {
+  margin: 0 0 var(--space-sm);
+  font-size: 1.125rem;
+}
+
+.intro {
+  margin: 0 0 var(--space-lg);
+  color: var(--color-text-muted);
+}
+
+.status-list {
+  list-style: none;
+  margin: 0 0 var(--space-lg);
+  padding: 0;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.status-item {
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.status-item dt {
+  margin: 0 0 var(--space-xs);
+  font-weight: 650;
+}
+
+.status-item dd {
+  margin: 0;
+}
+
+.status-item[data-estado="ok"] dd {
+  color: var(--color-success);
+}
+
+.status-item[data-estado="erro"] dd {
+  color: var(--color-danger);
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.botao:hover {
+  filter: brightness(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 40rem) {
+  .app-header,
+  .app-main {
+    width: calc(100% - var(--space-md) * 2);
+  }
+}

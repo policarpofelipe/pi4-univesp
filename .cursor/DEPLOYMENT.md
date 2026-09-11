@@ -36,7 +36,7 @@ Não unificar silenciosamente repo e runtime.
 
 Quando o Vite existir, o document root deve receber o **resultado do build** (`dist/`), não `node_modules/` nem um processo Node em produção. Node.js não é daemon do PI. O processo persistente continua sendo só o FastAPI via systemd.
 
-A presença de Node 24 LTS na VPS **ainda não foi auditada**. Não instalar nesta fase.
+A presença de Node 24 LTS na VPS foi validada pelo grupo: **24.21.0** via NVM 0.40.7 do usuário `flivocom`. Não alterar Node global/cPanel. O build Vite ainda **não** foi publicado no document root.
 
 ---
 
