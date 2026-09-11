@@ -143,6 +143,31 @@ a:hover {
   color: var(--color-text-muted);
 }
 
+.link-github {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: var(--control-height);
+  margin-top: var(--space-lg);
+  padding: 0 var(--space-md);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius);
+  color: var(--color-identity);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.link-github:hover {
+  color: var(--color-identity);
+  border-color: var(--color-identity);
+  background: var(--color-surface);
+}
+
+.link-github svg {
+  flex-shrink: 0;
+}
+
 .pagina-login {
   display: flex;
   flex-direction: column;
