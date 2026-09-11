@@ -5,14 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PI4 UNIVESP — Convites</title>
   </head>
-  <body>
+  <body class="shell">
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
-    <header class="app-header">
-      <p><a href="/painel.html">Voltar ao painel</a></p>
-      <h1>Gerenciar convites</h1>
+    <header class="shell-top">
+      <p class="shell-marca">PI4 UNIVESP</p>
+      <nav class="shell-nav" aria-label="Principal">
+        <a href="/painel.html">Painel</a>
+        <a href="/convites.html" aria-current="page">Convites</a>
+      </nav>
+      <div class="shell-user">
+        <span id="nome-usuario">…</span>
+        <span id="perfil-usuario" class="perfil">…</span>
+        <a class="botao botao-secundario" href="/painel.html">Voltar</a>
+      </div>
     </header>
-    <main id="conteudo" class="app-main">
-      <form id="form-convite" hidden>
+    <main id="conteudo" class="shell-main">
+      <h1>Convites</h1>
+      <p class="lede">
+        Convide pessoas pelo nome e e-mail. Elas definem a própria senha. Não há
+        cadastro público.
+      </p>
+      <form id="form-convite" class="form-restrito" hidden>
         <div class="campo">
           <label for="nome">Nome</label>
           <input

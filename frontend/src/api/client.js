@@ -14,8 +14,26 @@ async function interpretarErro(resposta) {
     if (typeof corpo.detail === "string") {
       return corpo.detail;
     }
+    if (Array.isArray(corpo.detail)) {
+      const mensagens = corpo.detail.map((item) => item.msg).filter(Boolean);
+      if (mensagens.length) {
+        return mensagens.join(" ");
+      }
+    }
   } catch {
     /* resposta não JSON */
+  }
+  if (resposta.status === 401) {
+    return "Não autenticado.";
+  }
+  if (resposta.status === 403) {
+    return "Acesso restrito.";
+  }
+  if (resposta.status === 422) {
+    return "Dados inválidos.";
+  }
+  if (resposta.status >= 500) {
+    return "Falha temporária no servidor.";
   }
   return `A API retornou HTTP ${resposta.status}.`;
 }

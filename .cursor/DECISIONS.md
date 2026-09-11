@@ -120,11 +120,11 @@ Atualização (2026-09-11): Vanilla JS e Plotly permanecem. **Node.js passou a s
 
 ## ADR-012 — `.env.example` só com placeholder; senha vazada deve ser rotacionada
 
-- **Status:** aceita (working tree corrigido; rotação no servidor ainda pendente)
+- **Status:** aceita (credencial antiga **revogada** no MariaDB e no `.env` de runtime)
 - **Contexto:** o commit inicial versionou `DB_PASSWORD` real em `backend/.env.example`.
-- **Decisão:** o exemplo passa a usar apenas `altere-esta-senha`. A senha de `flivocom_pi4app` no MariaDB deve ser trocada na VPS; o `.env` de runtime não volta ao Git. Não reescrever o histórico só para ocultar o valor antigo.
-- **Por quê:** o histórico público/clonável já contém o segredo; só a rotação o invalida. Placeholder evita novo vazamento.
-- **Consequência:** após o commit sanitizado, ainda é obrigatório `ALTER USER` + atualizar `/home/flivocom/pi4-backend/.env` + reiniciar `pi4-backend.service`.
+- **Decisão:** o exemplo usa apenas `altere-esta-senha`. A senha de `flivocom_pi4app` **foi rotacionada** na VPS (2026-09-11). Validado por `banco.py`, FastAPI e `GET /api/status/banco`. A credencial antiga está **inutilizável**. O `.env` de runtime não volta ao Git. Não reescrever o histórico só para ocultar o valor antigo.
+- **Por quê:** o histórico público/clonável ainda contém o segredo revogado; a rotação o invalida. Placeholder evita novo vazamento.
+- **Consequência:** a ADR-012 **não** bloqueia mais migration/deploy por comprometimento ativo. Pendência de higiene: remover a credencial revogada do histórico Git (sem colocar senha nova em Git, docs ou log).
 
 ---
 

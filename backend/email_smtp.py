@@ -1,3 +1,4 @@
+import html
 import smtplib
 import ssl
 from email.message import EmailMessage
@@ -24,17 +25,19 @@ def enviar_convite(nome, email, link, horas_expiracao):
         f"{link}\n\n"
         "Se você não reconhece este convite, ignore esta mensagem.\n"
     )
-    html = f"""\
-<p>Olá, {nome}.</p>
+    nome_html = html.escape(nome, quote=True)
+    link_html = html.escape(link, quote=True)
+    html_corpo = f"""\
+<p>Olá, {nome_html}.</p>
 <p>Você foi convidado(a) a acessar o PI4 UNIVESP — Análise de Dados do
 Suporte Técnico.</p>
 <p>Ao abrir o link, você definirá a sua própria senha. O convite expira
 em {horas_expiracao} horas.</p>
-<p><a href="{link}">Definir senha e acessar</a></p>
+<p><a href="{link_html}">Definir senha e acessar</a></p>
 <p>Se você não reconhece este convite, ignore esta mensagem.</p>
 """
     mensagem.set_content(texto)
-    mensagem.add_alternative(html, subtype="html")
+    mensagem.add_alternative(html_corpo, subtype="html")
 
     contexto = ssl.create_default_context()
     try:

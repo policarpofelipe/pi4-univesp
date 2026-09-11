@@ -26,17 +26,17 @@ Itens abaixo são informação de ambiente fornecida e já validada, salvo onde 
 
 `GET /api/status/banco` não respondeu a tempo nesta inspeção; a validação prévia do grupo permanece como referência de ambiente.
 
-### Segurança (em correção — bloqueia a fase 1)
+### Segurança
 
 | Item | Situação |
 |---|---|
-| `backend/.env.example` com placeholder | OK no working tree (`altere-esta-senha`) |
-| `.gitignore` reforçado para `.env.*` | OK no working tree |
-| Commit/push do exemplo sanitizado | Pendente de autorização |
-| Rotação da senha de `flivocom_pi4app` na VPS | Pendente |
-| Atualizar `.env` de runtime e reiniciar o serviço | Pendente |
+| `backend/.env.example` com placeholder | OK |
+| Credencial MariaDB antiga | **Revogada / inutilizável** |
+| Runtime `.env` com senha nova | OK — validado em `/api/status/banco` |
+| Remoção da credencial revogada do histórico Git | Pendente (higiene) |
+| Identidade no MariaDB (Alembic + mestre) | Código pronto; **não aplicado** |
 
-Não avançar à modelagem enquanto a senha antiga (já presente no histórico do Git) não for invalidada no MariaDB.
+A fase 1 (dados) continua à espera do inventário da fonte. A identidade **não** desbloqueia schema analítico.
 
 ### Não concluído (domínio do PI)
 
@@ -71,7 +71,7 @@ Pastas planejadas `sql/` e `ml/` **não existem** no repositório. Isso é ausê
 0.3 Toolchain Vite no repositório            ← concluída (sem publish)
 0.4 Identidade e acesso (código)             ← concluída no Git; sem aplicar na VPS
         ↓
-1. Análise e modelagem dos dados             ← ainda bloqueada pela rotação da senha (ADR-012)
+1. Análise e modelagem dos dados             ← inventário da fonte (identidade não substitui)
         ↓
 2. Schema analítico mínimo + importação
         ↓
@@ -94,14 +94,19 @@ Dependência dura no domínio: **1 bloqueia 2**. **2 bloqueia 3 e 5**. **3 e 4 p
 
 ---
 
-## Próxima tarefa na VPS — não executar até autorização
+## Próxima tarefa na VPS — não executar até autorização desta revisão
 
-Ordem prevista, **depois** da rotação ADR-012 e de autorização explícita:
+Ordem prevista no runtime `/home/flivocom/pi4-backend`:
 
-1. publicar `frontend/dist` (login MPA) via o workflow de frontend ou o processo já documentado;
-2. no runtime backend: `pip install`, `alembic upgrade head`, `SHOW CREATE TABLE`, `criar_usuario_mestre.py`, `systemctl restart pi4-backend`.
+1. copiar o backend do clone (sem `.env`);
+2. `pip install -r requirements.txt` no venv 3.12;
+3. completar `SMTP_*`, `APP_URL`, `COOKIE_SECURE=true` no `.env`;
+4. `alembic upgrade head` e `SHOW CREATE TABLE`;
+5. `python scripts/criar_usuario_mestre.py`;
+6. reiniciar `pi4-backend`;
+7. republicar `frontend/dist` (identidade visual).
 
-A fase 1 (dados) permanece bloqueada enquanto a senha do ADR-012 não for rotacionada. Critério: fonte, dicionário, volume/qualidade, anonimização, schema mínimo justificado; ver `DATA.md`.
+A fase 1 (dados) espera o inventário da fonte; ver `DATA.md`. A credencial MariaDB antiga está revogada.
 
 ---
 
@@ -120,7 +125,7 @@ Ainda assim, implementação de API analítica, gráficos com dados e ML esperam
 ## O que nenhum agente deve fazer até a fase correspondente
 
 - criar tabelas analíticas ou "completar" o modelo de chamados;
-- aplicar Alembic ou o script do mestre em produção sem autorização e sem ADR-012;
+- aplicar Alembic ou o script do mestre em produção sem autorização explícita;
 - implementar dashboard Plotly;
 - treinar ou escolher algoritmo de ML como decisão fechada;
 - gerar dados fictícios para parecer pronto;

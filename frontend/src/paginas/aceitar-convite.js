@@ -3,11 +3,26 @@ import { aceitarConvite, validarConvite } from "../api/convites.js";
 
 const aviso = document.getElementById("aviso-convite");
 const formulario = document.getElementById("form-aceite");
+const blocoCarregando = document.getElementById("bloco-carregando");
 const blocoInvalido = document.getElementById("bloco-invalido");
+const blocoExpirado = document.getElementById("bloco-expirado");
+const blocoUtilizado = document.getElementById("bloco-utilizado");
+const blocoErro = document.getElementById("bloco-erro");
 const blocoFormulario = document.getElementById("bloco-formulario");
 const blocoSucesso = document.getElementById("bloco-sucesso");
 const nomeEl = document.getElementById("nome-convidado");
 const emailEl = document.getElementById("email-convidado");
+const botao = formulario.querySelector('button[type="submit"]');
+
+function ocultarEstados() {
+  blocoCarregando.hidden = true;
+  blocoInvalido.hidden = true;
+  blocoExpirado.hidden = true;
+  blocoUtilizado.hidden = true;
+  blocoErro.hidden = true;
+  blocoFormulario.hidden = true;
+  blocoSucesso.hidden = true;
+}
 
 function mostrarAviso(texto, estado) {
   aviso.hidden = false;
@@ -24,14 +39,23 @@ function lerToken() {
 async function iniciar() {
   const token = lerToken();
   history.replaceState(null, "", window.location.pathname);
+  ocultarEstados();
   if (!token) {
     blocoInvalido.hidden = false;
     return;
   }
+  blocoCarregando.hidden = false;
   try {
     const dados = await validarConvite(token);
+    ocultarEstados();
     if (!dados.valido) {
-      blocoInvalido.hidden = false;
+      if (dados.motivo === "expirado") {
+        blocoExpirado.hidden = false;
+      } else if (dados.motivo === "utilizado") {
+        blocoUtilizado.hidden = false;
+      } else {
+        blocoInvalido.hidden = false;
+      }
       return;
     }
     nomeEl.textContent = dados.nome;
@@ -39,7 +63,8 @@ async function iniciar() {
     blocoFormulario.hidden = false;
     formulario.dataset.token = token;
   } catch {
-    blocoInvalido.hidden = false;
+    ocultarEstados();
+    blocoErro.hidden = false;
   }
 }
 
@@ -53,14 +78,15 @@ formulario.addEventListener("submit", async (evento) => {
     mostrarAviso("Erro — as senhas não coincidem.", "erro");
     return;
   }
+  botao.disabled = true;
   mostrarAviso("Enviando — aguarde…", "carregando");
   try {
     await aceitarConvite(token, senha, confirmacao);
-    blocoFormulario.hidden = true;
+    ocultarEstados();
     blocoSucesso.hidden = false;
-    aviso.hidden = true;
   } catch (erro) {
     mostrarAviso(`Erro — ${erro.message}`, "erro");
+    botao.disabled = false;
   }
 });
 

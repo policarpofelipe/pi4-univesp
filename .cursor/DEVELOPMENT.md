@@ -98,16 +98,11 @@ O `.gitignore` atual cobre `.env`, `*.env`, `.venv/`, `venv/`, `__pycache__/`, `
 
 ### Correção de 2026-09-10
 
-`backend/.env.example` chegou a ser commitado com um valor de `DB_PASSWORD` que não era placeholder. O working tree agora usa só `altere-esta-senha`.
+`backend/.env.example` chegou a ser commitado com um valor de `DB_PASSWORD` que não era placeholder. O Git usa só `altere-esta-senha`.
 
-Isso **não apaga** o valor antigo do histórico do Git/GitHub. A correção completa exige:
+A senha de `flivocom_pi4app` **foi rotacionada** (2026-09-11) e validada em `/api/status/banco`. A credencial antiga está **revogada**. O histórico do Git ainda a contém; pendência de higiene: removê-la do histórico sem colocar senha nova em Git, docs ou log.
 
-1. commitar e enviar este exemplo sanitizado;
-2. **rotacionar** a senha de `flivocom_pi4app` no MariaDB da VPS;
-3. atualizar somente `/home/flivocom/pi4-backend/.env`;
-4. reiniciar `pi4-backend.service` e validar `GET /api/status/banco`.
-
-Não copiar o valor antigo para documentação, chat ou novos arquivos. Não reescrever o histórico do Git só para “apagar” a senha: quem já clonou o repositório ainda a teria; a rotação no servidor é o que invalida o segredo.
+Não copiar o valor antigo para documentação, chat ou novos arquivos.
 
 ---
 

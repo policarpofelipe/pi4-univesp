@@ -35,7 +35,7 @@ class DadosAceite(BaseModel):
     confirmacao_senha: str
 
 
-def status_convite(convite, agora):
+def status_aceitacao(convite, agora):
     if convite.cancelado_em:
         return "cancelado"
     if convite.utilizado_em:
@@ -45,8 +45,19 @@ def status_convite(convite, agora):
     return "pendente"
 
 
+def status_convite(convite, agora):
+    ciclo = status_aceitacao(convite, agora)
+    if ciclo != "pendente":
+        return ciclo
+    if convite.erro_envio_em and convite.email_enviado_em is None:
+        return "falha de envio"
+    if convite.email_enviado_em:
+        return "enviado"
+    return "pendente"
+
+
 def _convite_pendente(convite, agora):
-    return status_convite(convite, agora) == "pendente"
+    return status_aceitacao(convite, agora) == "pendente"
 
 
 @router.post("", dependencies=[Depends(exigir_origem)])
@@ -114,8 +125,9 @@ def criar_convite(
         "email": convite.email,
         "criado_em": convite.criado_em.isoformat() + "Z",
         "expira_em": convite.expira_em.isoformat() + "Z",
-        "status": "pendente",
+        "status": status_convite(convite, agora_utc()),
         "email_enviado": True,
+        "erro_envio": False,
     }
 
 
@@ -155,8 +167,11 @@ def validar_convite(dados: DadosToken, sessao: Session = Depends(sessao_db)):
         .filter(ConviteUsuario.token_hash == hash_token(dados.token))
         .first()
     )
-    if convite is None or not _convite_pendente(convite, agora):
-        return {"valido": False}
+    if convite is None:
+        return {"valido": False, "motivo": "invalido"}
+    ciclo = status_aceitacao(convite, agora)
+    if ciclo != "pendente":
+        return {"valido": False, "motivo": ciclo}
 
     return {
         "valido": True,

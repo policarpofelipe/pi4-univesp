@@ -20,6 +20,11 @@ def criar_usuario_mestre():
             print("Já existe um usuário mestre. Nada foi alterado.")
             return 1
 
+        padrao = config.NOME_MESTRE_PADRAO
+        nome = input(f"Nome [{padrao}]: ").strip()
+        if not nome:
+            nome = padrao
+
         email = normalizar_email(input("E-mail: "))
         if not email:
             print("E-mail obrigatório.")
@@ -42,7 +47,7 @@ def criar_usuario_mestre():
 
         agora = agora_utc()
         usuario = Usuario(
-            nome=config.NOME_MESTRE_PADRAO,
+            nome=nome,
             email=email,
             senha_hash=hash_senha(senha),
             perfil="mestre",

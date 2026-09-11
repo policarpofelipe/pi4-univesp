@@ -1,7 +1,7 @@
 """SQLite em memória NÃO valida o schema MariaDB.
 
 A primeira migration Alembic deve ser aplicada e conferida no MariaDB
-real (flivocom_pi4) como gate manual, após a rotação ADR-012, antes do deploy.
+real (flivocom_pi4) como gate manual, após revisão, antes do deploy.
 """
 
 import os

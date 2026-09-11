@@ -117,7 +117,7 @@ A API não deve ser exposta diretamente na porta 8000 para a internet.
 | Host | localhost |
 | Porta | 3306 |
 
-Não usar root da aplicação. Não acessar bancos de outros sistemas. Não aplicar DDL analítico. A migration de identidade existe no Git e **não** deve ser aplicada enquanto a senha do ADR-012 não for rotacionada.
+Não usar root da aplicação. Não acessar bancos de outros sistemas. Não aplicar DDL analítico. A migration de identidade existe no Git e **não** deve ser aplicada até autorização desta revisão. A credencial MariaDB antiga está revogada.
 
 O MCP MySQL eventualmente disponível no Cursor de um desenvolvedor **não** é, por padrão, o banco do PI. Não consultar outros schemas.
 

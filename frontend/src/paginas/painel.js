@@ -3,7 +3,7 @@ import { sair, usuarioAtual } from "../api/autenticacao.js";
 
 const nomeEl = document.getElementById("nome-usuario");
 const perfilEl = document.getElementById("perfil-usuario");
-const convitesEl = document.getElementById("acesso-convites");
+const navConvites = document.getElementById("nav-convites");
 const botaoSair = document.getElementById("botao-sair");
 const aviso = document.getElementById("aviso-painel");
 
@@ -12,8 +12,8 @@ async function iniciar() {
     const usuario = await usuarioAtual();
     nomeEl.textContent = usuario.nome;
     perfilEl.textContent = usuario.perfil;
-    if (usuario.perfil === "mestre") {
-      convitesEl.hidden = false;
+    if (usuario.perfil === "mestre" && navConvites) {
+      navConvites.hidden = false;
     }
   } catch {
     window.location.href = "/";
@@ -22,7 +22,9 @@ async function iniciar() {
 
 botaoSair.addEventListener("click", async () => {
   aviso.hidden = false;
+  aviso.dataset.estado = "carregando";
   aviso.textContent = "Encerrando sessão…";
+  botaoSair.disabled = true;
   try {
     await sair();
   } finally {

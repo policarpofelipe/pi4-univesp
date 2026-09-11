@@ -5,22 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PI4 UNIVESP — Aceitar convite</title>
   </head>
-  <body>
+  <body class="shell">
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
-    <header class="app-header">
-      <p>PI4 UNIVESP</p>
-      <h1>Definir senha</h1>
+    <header class="shell-top">
+      <p class="shell-marca">PI4 UNIVESP</p>
     </header>
-    <main id="conteudo" class="app-main">
-      <p id="bloco-invalido" hidden>
-        Este convite é inválido, expirado ou já foi utilizado.
+    <main id="conteudo" class="shell-main">
+      <h1>Definir senha</h1>
+      <p id="bloco-carregando" class="estado-pagina">
+        Verificando convite — aguarde…
       </p>
-      <div id="bloco-formulario" hidden>
-        <p>Olá, <strong id="nome-convidado"></strong>.</p>
-        <p>E-mail: <strong id="email-convidado"></strong></p>
-        <p class="intro">
-          Defina a sua senha definitiva. Mínimo de 12 caracteres. Use um
-          gerenciador de senhas se preferir.
+      <p id="bloco-invalido" class="estado-pagina" hidden>
+        Este convite é inválido.
+      </p>
+      <p id="bloco-expirado" class="estado-pagina" hidden>
+        Este convite expirou.
+      </p>
+      <p id="bloco-utilizado" class="estado-pagina" hidden>
+        Este convite já foi utilizado.
+      </p>
+      <p id="bloco-erro" class="estado-pagina" hidden>
+        Não foi possível verificar o convite. Tente novamente mais tarde.
+      </p>
+      <div id="bloco-formulario" class="form-restrito" hidden>
+        <p class="convite-meta">
+          <span id="nome-convidado"></span><br />
+          <strong id="email-convidado"></strong>
+        </p>
+        <p class="lede">
+          Defina a senha definitiva, de 12 a 128 caracteres. Use um gerenciador
+          de senhas se preferir.
         </p>
         <form id="form-aceite">
           <div class="campo">
@@ -36,7 +50,7 @@
             />
           </div>
           <div class="campo">
-            <label for="confirmacao">Confirmar nova senha</label>
+            <label for="confirmacao">Confirmar senha</label>
             <input
               id="confirmacao"
               name="confirmacao"
@@ -47,12 +61,12 @@
               required
             />
           </div>
-          <button type="submit" class="botao">Criar conta</button>
+          <button type="submit" class="botao">Criar acesso</button>
         </form>
         <p id="aviso-convite" class="aviso" hidden aria-live="polite"></p>
       </div>
       <div id="bloco-sucesso" hidden>
-        <p>OK — a conta foi criada.</p>
+        <p>Conta criada com sucesso.</p>
         <p><a href="/">Ir para o login</a></p>
       </div>
     </main>

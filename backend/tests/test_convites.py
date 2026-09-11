@@ -40,6 +40,7 @@ def test_mestre_cria_convite(cliente, mestre):
     assert "token" not in corpo
     assert "token_hash" not in corpo
     assert corpo["email"] == "ana@example.com"
+    assert corpo["status"] == "enviado"
     envio.assert_called_once()
     link = envio.call_args[0][2]
     assert "#token=" in link
@@ -70,6 +71,7 @@ def test_smtp_falha_mantem_convite(cliente, mestre, sessao):
     assert convite.erro_envio_em is not None
     assert convite.email_enviado_em is None
     assert convite.utilizado_em is None
+    assert status_convite(convite, agora_utc()) == "falha de envio"
 
 
 def test_token_expirado_rejeitado(sessao, mestre):
@@ -133,12 +135,32 @@ def test_token_nao_aparece_na_listagem(cliente, mestre):
         )
     lista = cliente.get("/api/convites", headers=cabecalho_origem())
     assert lista.status_code == 200
+    assert lista.json()[0]["status"] == "enviado"
     texto = lista.text
     assert "token_hash" not in texto
     assert "#token=" not in texto
 
 
-def test_segundo_convite_pendente_rejeitado(cliente, mestre):
+def test_validar_token_invalido(cliente):
+    resposta = cliente.post(
+        "/api/convites/validar",
+        json={"token": "token-inexistente"},
+    )
+    assert resposta.status_code == 200
+    assert resposta.json()["valido"] is False
+    assert resposta.json()["motivo"] == "invalido"
+
+
+def test_aceite_token_invalido(cliente):
+    resposta = cliente.post(
+        "/api/convites/aceitar",
+        json={
+            "token": "token-inexistente",
+            "senha": "senha-definitiva",
+            "confirmacao_senha": "senha-definitiva",
+        },
+    )
+    assert resposta.status_code == 400
     _entrar(cliente, mestre.email, "senha-mestre-ok")
     with patch("rotas_convites.enviar_convite"):
         primeiro = cliente.post(
@@ -153,3 +175,25 @@ def test_segundo_convite_pendente_rejeitado(cliente, mestre):
         )
     assert primeiro.status_code == 200
     assert segundo.status_code == 409
+
+
+def test_validar_token_invalido(cliente):
+    resposta = cliente.post(
+        "/api/convites/validar",
+        json={"token": "token-inexistente"},
+    )
+    assert resposta.status_code == 200
+    assert resposta.json()["valido"] is False
+    assert resposta.json()["motivo"] == "invalido"
+
+
+def test_aceite_token_invalido(cliente):
+    resposta = cliente.post(
+        "/api/convites/aceitar",
+        json={
+            "token": "token-inexistente",
+            "senha": "senha-definitiva",
+            "confirmacao_senha": "senha-definitiva",
+        },
+    )
+    assert resposta.status_code == 400

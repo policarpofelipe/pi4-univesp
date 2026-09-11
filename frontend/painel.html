@@ -5,21 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PI4 UNIVESP — Painel</title>
   </head>
-  <body>
+  <body class="shell">
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
-    <header class="app-header">
-      <p>PI4 UNIVESP</p>
-      <h1>Painel</h1>
+    <header class="shell-top">
+      <p class="shell-marca">PI4 UNIVESP</p>
+      <nav class="shell-nav" aria-label="Principal">
+        <a href="/painel.html" aria-current="page">Painel</a>
+        <a id="nav-convites" hidden href="/convites.html">Convites</a>
+      </nav>
+      <div class="shell-user">
+        <span id="nome-usuario">…</span>
+        <span id="perfil-usuario" class="perfil">…</span>
+        <button type="button" class="botao botao-secundario" id="botao-sair">
+          Sair
+        </button>
+      </div>
     </header>
-    <main id="conteudo" class="app-main">
-      <p>Usuário: <strong id="nome-usuario">…</strong></p>
-      <p>Perfil: <strong id="perfil-usuario">…</strong></p>
-      <p>Dashboard em desenvolvimento.</p>
-      <p id="acesso-convites" hidden>
-        <a href="/convites.html">Gerenciar convites</a>
-      </p>
+    <main id="conteudo" class="shell-main">
+      <h1>Painel</h1>
+      <p class="lede">Análise de Dados do Suporte Técnico</p>
+      <p class="painel-vazio">Dashboard em desenvolvimento.</p>
       <p id="aviso-painel" class="aviso" hidden aria-live="polite"></p>
-      <button type="button" class="botao" id="botao-sair">Sair</button>
     </main>
     <script type="module" src="/src/paginas/painel.js"></script>
   </body>

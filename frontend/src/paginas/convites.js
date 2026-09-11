@@ -5,6 +5,9 @@ import { criarConvite, listarConvites } from "../api/convites.js";
 const aviso = document.getElementById("aviso-convites");
 const formulario = document.getElementById("form-convite");
 const lista = document.getElementById("lista-convites");
+const nomeEl = document.getElementById("nome-usuario");
+const perfilEl = document.getElementById("perfil-usuario");
+const botao = formulario.querySelector('button[type="submit"]');
 
 function mostrarAviso(texto, estado) {
   aviso.hidden = false;
@@ -18,16 +21,6 @@ function escapar(texto) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
-}
-
-function rotuloStatus(item) {
-  if (item.status === "pendente" && item.erro_envio) {
-    return "pendente (e-mail não enviado)";
-  }
-  if (item.status === "pendente" && item.email_enviado) {
-    return "pendente (e-mail enviado)";
-  }
-  return item.status;
 }
 
 function formatarData(iso) {
@@ -49,11 +42,11 @@ function renderizar(convites) {
         <td>${escapar(item.email)}</td>
         <td>${escapar(formatarData(item.criado_em))}</td>
         <td>${escapar(formatarData(item.expira_em))}</td>
-        <td>${escapar(rotuloStatus(item))}</td>
+        <td><span class="status-texto">${escapar(item.status)}</span></td>
       </tr>`,
     )
     .join("");
-  lista.innerHTML = `<table>
+  lista.innerHTML = `<div class="tabela-envolve"><table>
     <caption>Convites recentes</caption>
     <thead>
       <tr>
@@ -65,7 +58,7 @@ function renderizar(convites) {
       </tr>
     </thead>
     <tbody>${linhas}</tbody>
-  </table>`;
+  </table></div>`;
 }
 
 async function carregarLista() {
@@ -76,9 +69,15 @@ async function carregarLista() {
 async function iniciar() {
   try {
     const usuario = await usuarioAtual();
+    if (nomeEl) {
+      nomeEl.textContent = usuario.nome;
+    }
+    if (perfilEl) {
+      perfilEl.textContent = usuario.perfil;
+    }
     if (usuario.perfil !== "mestre") {
       document.getElementById("conteudo").innerHTML =
-        "<p>Acesso negado. Esta área é restrita ao perfil mestre.</p>";
+        "<h1>Acesso negado</h1><p>Esta área é restrita ao perfil mestre.</p>";
       return;
     }
     formulario.hidden = false;
@@ -91,6 +90,7 @@ async function iniciar() {
 formulario.addEventListener("submit", async (evento) => {
   evento.preventDefault();
   const dados = new FormData(formulario);
+  botao.disabled = true;
   mostrarAviso("Enviando — aguarde…", "carregando");
   try {
     await criarConvite(dados.get("nome"), dados.get("email"));
@@ -104,6 +104,8 @@ formulario.addEventListener("submit", async (evento) => {
     } catch {
       /* lista opcional após erro */
     }
+  } finally {
+    botao.disabled = false;
   }
 });
 

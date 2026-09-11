@@ -67,13 +67,15 @@ Respeitar `prefers-reduced-motion`. Evitar animação decorativa ou movimento se
 
 ## Páginas desta etapa (MPA)
 
-Home pública: **login** (`index.html`) — bloco institucional (título do PI e integrantes com RA) + formulário Entrar. Sem cadastro e sem “esqueci senha”.
+Identidade visual: fundo frio (`--color-background`), superfície elevada no formulário, faixa `--color-identity` no shell autenticado. Sem bege, sem bordas pesadas em blocos, sem lista com bullets nos integrantes.
 
-Autenticadas: `painel.html` (placeholder do dashboard) e `convites.html` (só perfil mestre).
+Home: **login** com formulário primeiro no mobile (`order`); desktop em duas colunas (identidade + auth; integrantes em grade `dt`/`dd`). Sem cadastro e sem “esqueci senha”.
 
-Pública com token: `convite.html` lê `#token=`, valida, remove o fragmento da barra (`replaceState`), pede senha definitiva (`autocomplete="new-password"`).
+Autenticadas: shell comum (`painel.html`, `convites.html`) — marca, navegação curta, usuário, sair.
 
-Estados de formulário: texto + `data-estado` (`ok` / `erro` / `carregando`). A cor não é o único sinal — as mensagens começam com “OK —”, “Erro —” ou “Enviando —”.
+Pública com token: `convite.html` lê `#token=`, `replaceState`, estados carregando/válido/inválido/expirado/utilizado/erro/sucesso.
+
+Estados de formulário: texto + `data-estado`. A cor não é o único sinal.
 
 ---
 
@@ -116,13 +118,9 @@ Possível ordem: header compacto → filtros (período, setor, operador, cliente
 
 ## Design tokens
 
-Quando a implementação visual começar, CSS Custom Properties como fonte única. Não espalhar hex e medidas arbitrárias. Não fixar valores definitivos enquanto não houver design.
+Fonte única: `frontend/src/styles/tokens.css`. Não espalhar hex no CSS de páginas.
 
-Categorias: cores, tipografia, espaçamentos, raios, bordas, sombras, larguras máximas, breakpoints se necessário.
-
-Exemplo conceitual de nomes (sem valores):
-
-`--color-background`, `--color-surface`, `--color-text`, `--color-text-muted`, `--color-border`, `--color-primary`, `--color-success`, `--color-warning`, `--color-danger`, `--space-xs` … `--space-xl`.
+Categorias em uso: fundo, superfície, superfície elevada, identidade, interação (hover/active/disabled), texto, texto secundário, bordas, sucesso/alerta/erro, foco, espaçamento, tipografia, raio, sombra, altura de controle (`44px`).
 
 ---
 
