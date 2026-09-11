@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PI4 UNIVESP — Convites</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="app-header">
+      <p><a href="/painel.html">Voltar ao painel</a></p>
+      <h1>Gerenciar convites</h1>
+    </header>
+    <main id="conteudo" class="app-main">
+      <form id="form-convite" hidden>
+        <div class="campo">
+          <label for="nome">Nome</label>
+          <input
+            id="nome"
+            name="nome"
+            type="text"
+            autocomplete="name"
+            required
+          />
+        </div>
+        <div class="campo">
+          <label for="email">E-mail</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+          />
+        </div>
+        <button type="submit" class="botao">Enviar convite</button>
+      </form>
+      <p id="aviso-convites" class="aviso" hidden aria-live="polite"></p>
+      <h2>Convites recentes</h2>
+      <div id="lista-convites"></div>
+    </main>
+    <script type="module" src="/src/paginas/convites.js"></script>
+  </body>
+</html>

@@ -25,4 +25,6 @@ Ler `.cursor/ARCHITECTURE.md` e `.cursor/DEVELOPMENT.md`.
 
 - Não adicionar Redis, filas, auth enterprise ou segundo banco.
 - Não treinar ML dentro de request de filtro.
-- Não criar models/tabelas antes da fase de schema autorizada.
+- Não criar models/tabelas **analíticos** antes da fase de schema autorizada no `ROADMAP.md`.
+  Tabelas de identidade (`usuarios`, `convites_usuarios`, `sessoes_usuarios`) são exceção
+  já autorizada; evolução só via Alembic.

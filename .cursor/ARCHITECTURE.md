@@ -63,6 +63,8 @@ Streamlit também foi descartado (ADR-004).
 | Apoio numérico | NumPy, quando necessário |
 | Acesso a dados | SQLAlchemy + PyMySQL |
 | Configuração | python-dotenv / variáveis de ambiente |
+| Evolução de schema | Alembic (identidade; analítico ainda não) |
+| Senhas | Argon2id via `pwdlib` |
 | Servidor web | Apache 2.4 |
 | Reverse proxy | Apache `/api/*` → FastAPI |
 
@@ -102,7 +104,7 @@ SQLAlchemy usa o dialect `mysql+pymysql`. Isso é compatível com MariaDB e **n�
 | Frontend | Filtros, chamada a `/api/...`, KPIs, gráficos, loading e erro; build Vite | Regras analíticas críticas; tratamento pesado de dados; substituir FastAPI |
 | Node.js / npm / Vite | Dev server e geração de `dist/` | Processo de produção do backend; API |
 | Apache | HTTPS, document root dos estáticos, proxy de `/api/*` | Lógica de negócio |
-| FastAPI | Fronteira HTTP; endpoints pequenos e orientados ao dashboard | Expor credenciais, stack traces ou dumps da base inteira |
+| FastAPI | Fronteira HTTP; status, identidade/acesso e, depois, dashboard | Expor credenciais, stack traces, tokens em claro ou dumps da base |
 | Python / Pandas | Preparação, EDA, feature engineering, transformações analíticas | Substituir SQL em filtros/joins/agregações simples |
 | scikit-learn | Treino/avaliação/inferência do problema de ML escolhido | "Score de IA" sem pergunta definida; treino a cada clique |
 | MariaDB | Persistência, filtros, joins, agregações básicas | Toda a análise estatística e o ML |
@@ -150,17 +152,23 @@ O GitHub não hospeda a aplicação. A aplicação roda na VPS.
 
 ## Mapeamento do código atual no repositório
 
-Confirmado na inspeção de 2026-09-10:
-
 | Arquivo | Papel atual |
 |---|---|
-| `backend/app.py` | FastAPI mínimo: `/`, `/api/status`, `/api/status/banco` |
-| `backend/banco.py` | Engine SQLAlchemy + `testar_conexao()` (`SELECT DATABASE(), VERSION()`) |
-| `backend/requirements.txt` | Freeze da stack, incluindo Pandas e scikit-learn ainda não usados no código |
-| `backend/.env.example` | Variáveis `DB_*` (ver risco em `DEVELOPMENT.md`) |
-| `frontend/` | Vite 8 + Vanilla JS: status de `/api/status` e `/api/status/banco` |
+| `backend/app.py` | FastAPI: `/`, `/api/status`, `/api/status/banco` + routers de autenticação e convites |
+| `backend/config.py` | `DB_*`, `APP_URL`, SMTP, cookie, prazos de convite/sessão |
+| `backend/banco.py` | Engine SQLAlchemy + `obter_sessao()` + `testar_conexao()` |
+| `backend/datas.py` | `agora_utc()` — relógio UTC da aplicação |
+| `backend/modelos.py` | `Usuario`, `ConviteUsuario`, `SessaoUsuario` |
+| `backend/alembic/` | Revision `0001_identidade` (não aplicada em produção nesta etapa) |
+| `backend/seguranca.py` | Argon2id; SHA-256 só para tokens |
+| `backend/email_smtp.py` | SMTP_SSL do convite |
+| `backend/rotas_autenticacao.py` / `rotas_convites.py` | Login, sessão, convites |
+| `backend/scripts/criar_usuario_mestre.py` | Bootstrap interativo — **não executar** até autorização |
+| `backend/requirements.txt` | Dependências **diretas** (não freeze transitivo) |
+| `backend/.env.example` | Placeholders `DB_*` e `SMTP_*` (ADR-012) |
+| `frontend/` | Vite 8 MPA: login, painel, convite, convites |
 
-Não existem ainda, no repositório, as pastas `sql/` e `ml/`. Plotly está em `package.json` e ainda não é usado em gráfico. O build **não** está publicado no document root.
+Não existem as pastas `sql/` e `ml/`. Plotly está em `package.json` e ainda não é usado em gráfico. O `dist/` de identidade **não** está publicado só por existir no repo.
 
 ---
 
@@ -168,39 +176,52 @@ Não existem ainda, no repositório, as pastas `sql/` e `ml/`. Plotly está em `
 
 ```
 frontend/
-├── index.html
+├── index.html          ← login institucional (home pública)
+├── painel.html
+├── convite.html
+├── convites.html
 ├── package.json
-├── package-lock.json
-├── vite.config.js
-├── eslint.config.js
-├── .nvmrc
-├── .env.example
-├── .prettierignore
+├── vite.config.js      ← MPA (rollup input das quatro páginas)
 └── src/
-    ├── main.js
     ├── api/
-    │   └── client.js
+    │   ├── client.js          ← credentials: include
+    │   ├── autenticacao.js
+    │   └── convites.js
+    ├── paginas/
+    │   ├── login.js
+    │   ├── painel.js
+    │   ├── convites.js
+    │   └── aceitar-convite.js
     └── styles/
         ├── tokens.css
         └── main.css
 ```
 
-JavaScript modular. Evitar `app.js` gigante, funções globais desnecessárias, lógica analítica importante no cliente, duplicação de chamadas à API e estilos inline.
+JavaScript modular. Evitar `app.js` gigante, funções globais desnecessárias, lógica analítica importante no cliente, duplicação de chamadas à API e estilos inline. Sessão **não** vai para `localStorage`.
 
 Normas visuais e WCAG: `UI.md`.
 
 ---
 
-## Contrato HTTP já existente
+## Contrato HTTP
 
 Prefixo público: `https://pi4.flivo.com.br/api/*` → `http://127.0.0.1:8000/api/*`
 
+`GET https://pi4.flivo.com.br/` é o `index.html` do Apache (login), não o JSON do FastAPI.
+
 | Método | Caminho | Comportamento |
 |---|---|---|
-| GET | `/` | `{"projeto": "PI4 UNIVESP", "status": "ativo"}` |
+| GET | `/` (FastAPI, localhost:8000) | `{"projeto": "PI4 UNIVESP", "status": "ativo"}` |
 | GET | `/api/status` | `{"status": "ok", "backend": "FastAPI", "python": "3.12"}` |
 | GET | `/api/status/banco` | status do banco ou HTTP 500 genérico |
+| POST | `/api/autenticacao/entrar` | cookie `pi4_sessao` se senha ok |
+| POST | `/api/autenticacao/sair` | revoga sessão |
+| GET | `/api/autenticacao/usuario-atual` | usuário da sessão ou 401 |
+| POST | `/api/convites` | só mestre; COMMIT + SMTP |
+| GET | `/api/convites` | só mestre; sem token |
+| POST | `/api/convites/validar` | público; `{valido}` |
+| POST | `/api/convites/aceitar` | público; cria usuário |
 
-O campo `python` em `/api/status` é literal `"3.12"`, não a versão detectada em runtime. O ambiente informado usa Python 3.12.14 no virtualenv.
+O campo `python` em `/api/status` é literal `"3.12"`. Sessão: cookie HttpOnly (ADR-018). Origem: ADR-021.
 
-Novos endpoints devem ser pequenos, documentados e orientados ao dashboard. Preferir query params para filtros. Não devolver a base inteira.
+Novos endpoints analíticos devem ser pequenos e orientados ao dashboard. Preferir query params para filtros. Não devolver a base inteira.

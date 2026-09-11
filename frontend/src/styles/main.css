@@ -129,6 +129,88 @@ body {
   filter: brightness(1.08);
 }
 
+.layout-login {
+  display: grid;
+  gap: var(--space-xl);
+  width: min(100% - var(--space-lg), 68rem);
+  margin: var(--space-lg) auto var(--space-xl);
+}
+
+@media (min-width: 50rem) {
+  .layout-login {
+    grid-template-columns: 1fr 22rem;
+    align-items: start;
+  }
+}
+
+.bloco-institucional,
+.bloco-autenticacao {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+
+.bloco-institucional h1 {
+  margin: 0 0 var(--space-sm);
+}
+
+.bloco-institucional ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.campo {
+  margin-bottom: var(--space-md);
+}
+
+.campo label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-weight: 650;
+}
+
+.campo input {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font: inherit;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.app-main a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.aviso {
+  margin-top: var(--space-md);
+}
+
+.aviso[data-estado="ok"] {
+  color: var(--color-success);
+}
+
+.aviso[data-estado="erro"] {
+  color: var(--color-danger);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

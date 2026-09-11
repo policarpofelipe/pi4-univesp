@@ -7,7 +7,7 @@ alwaysApply: true
 
 Ler `.cursor/DATA.md`. O schema **não** está fechado. O banco de aplicação está no estado inicial.
 
-Não criar tabelas, colunas, migrations ou seeds fictícios até a fase 2 do `ROADMAP.md`, depois do inventário da fonte real.
+Não criar tabelas, colunas, migrations ou seeds **analíticos** até a fase 2 do `ROADMAP.md`, depois do inventário da fonte real. As tabelas de identidade (`usuarios`, `convites_usuarios`, `sessoes_usuarios`) são trilha separada (Alembic `0001_identidade`) e não autorizam schema de chamados.
 
 ## Ordem obrigatória
 

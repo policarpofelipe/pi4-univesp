@@ -80,11 +80,11 @@ Atualização (2026-09-11): Vanilla JS e Plotly permanecem. **Node.js passou a s
 
 ## ADR-008 — Schema e fonte de dados em aberto
 
-- **Status:** aberta (proposital)
+- **Status:** aberta (proposital) para o **schema analítico**
 - **Contexto:** o banco `flivocom_pi4` está no estado inicial; a fonte real ainda não foi inventariada.
-- **Decisão:** não criar tabelas até concluir a análise da fonte.
-- **Por quê:** schema imaginado gera retrabalho e análise inválida.
-- **Consequência:** a próxima fase é descoberta de dados, não DDL.
+- **Decisão:** não criar tabelas **de chamados/análise** até concluir a análise da fonte. Tabelas de identidade (ADR-018 a ADR-023) são outra trilha, versionadas em Alembic, e **não** substituem o inventário da fonte.
+- **Por quê:** schema analítico imaginado gera retrabalho e análise inválida.
+- **Consequência:** a fase de dados continua sendo descoberta, não DDL analítico. Aplicar a migration de identidade no MariaDB só depois da rotação ADR-012 e com autorização explícita.
 
 ---
 
@@ -164,7 +164,7 @@ Atualização (2026-09-11): Vanilla JS e Plotly permanecem. **Node.js passou a s
 - **Contexto:** precisa haver ferramentas oficiais sem instalá-las antes da auditoria de ambiente.
 - **Decisão:** ESLint, Prettier, Vitest, Playwright, axe-core (ou equivalente) no frontend; pytest no backend. Versionar `package-lock.json`; não versionar `node_modules/` nem `dist/`.
 - **Por quê:** qualidade reproduzível, proporcional ao PI.
-- **Consequência:** instalação só depois da auditoria Node/npm. Não misturar Yarn/pnpm.
+- **Consequência:** instalação só depois da auditoria Node/npm. Pytest do backend passou a existir em `requirements-dev.txt` na etapa de identidade. Não misturar Yarn/pnpm.
 
 ---
 
@@ -174,7 +174,67 @@ Atualização (2026-09-11): Vanilla JS e Plotly permanecem. **Node.js passou a s
 - **Contexto:** o document root precisa receber `dist/` sem publicar à mão e sem tocar no backend.
 - **Decisão:** GitHub Actions em `main` (e `workflow_dispatch`) conecta por SSH com secrets `VPS_*`, valida com `npm run check` na VPS e só então faz rsync para `/home/flivocom/pi4.flivo.com.br/`. Sem `reset --hard`, sem actions SSH de terceiros, sem `StrictHostKeyChecking=no`. Concurrency `deploy-frontend` sem cancelar job em andamento.
 - **Por quê:** um único deploy por vez; falha se lint/build ou o git local divergir; Apache/systemd/MariaDB permanecem fora.
-- **Consequência:** backend continua manual. O clone em `/home/flivocom/pi4-univesp` precisa estar limpo e conseguir `pull --ff-only`. `rsync` e NVM 24 são requisitos da VPS.
+- **Consequência:** backend continua manual. O clone em `/home/flivocom/pi4-univesp` precisa estar limpo e conseguir `pull --ff-only`. `rsync` e NVM 24 são requisitos da VPS. CI de backend (venv, pytest, `alembic upgrade`, restart) permanece só descrito — não existe workflow ainda.
+
+---
+
+## ADR-018 — Sessão opaca em cookie HttpOnly
+
+- **Status:** aceita
+- **Contexto:** o PI precisa de acesso fechado (convite + login) sem virar produto de auth enterprise.
+- **Decisão:** sessão opaca persistida em `sessoes_usuarios` (`token_hash` SHA-256). Cookie `pi4_sessao`, HttpOnly, SameSite=Lax, Path=/, host-only, `Secure` conforme `COOKIE_SECURE`. Sem JWT, sem token de sessão no JavaScript/localStorage. `obter_usuario_atual` rejeita se `expira_em <= agora_utc()`, se `revogada_em` estiver preenchido ou se o usuário estiver inativo. Logout grava `revogada_em`. Sem cron; a tabela permite `DELETE` futuro de expiradas/revogadas sem mudar o modelo.
+- **Por quê:** o navegador não precisa ler o segredo da sessão; CSRF de origens cruzadas fica limitado pelo SameSite e pela checagem de `Origin`.
+- **Consequência:** duração padrão 8 h (`SESSAO_DURACAO_HORAS`). Testes com `COOKIE_SECURE=false` aceitam Origin de localhost:5173.
+
+---
+
+## ADR-019 — Convite com token no fragmento da URL
+
+- **Status:** aceita
+- **Contexto:** o mestre convida por nome e e-mail; o convidado define a senha definitiva.
+- **Decisão:** token criptográfico (`secrets.token_urlsafe(32)`) vai no link `…/convite.html#token=…`. Só o `token_hash` (SHA-256) é persistido. O fragmento não vai ao Apache/FastAPI no GET da página. A UI lê o hash, valida via POST e faz `history.replaceState` para tirar o token da barra. Sem cadastro público, sem “esqueci senha”, sem reenvio nesta etapa.
+- **Por quê:** o token original não é reversível nem reutilizável depois que a requisição de criação termina — mesmo que a linha do convite continue pendente.
+- **Consequência:** reenvio futuro (não implementar agora) deve gerar **novo** token, substituir `token_hash`, renovar `expira_em` e invalidar o link antigo.
+
+---
+
+## ADR-020 — Schema de identidade via Alembic
+
+- **Status:** aceita
+- **Contexto:** `create_all` não é evolução de schema; o banco de aplicação ainda não tem tabelas analíticas.
+- **Decisão:** três tabelas utf8mb4 — `usuarios`, `convites_usuarios`, `sessoes_usuarios` — na revision `0001_identidade`. Downgrade remove só essas tabelas. Pytest usa SQLite em memória e **não** valida o schema MariaDB. Gate manual, depois da ADR-012: `alembic upgrade head` em `flivocom_pi4` e `SHOW CREATE TABLE`.
+- **Por quê:** versionar DDL sem Docker nem segundo banco; não misturar com o schema de chamados.
+- **Consequência:** **não** aplicar a migration em produção nesta etapa. Não há bootstrap automático do usuário mestre.
+
+---
+
+## ADR-021 — Origem e SameSite no lugar de CORS amplo
+
+- **Status:** aceita
+- **Contexto:** frontend e API no mesmo sítio (`https://pi4.flivo.com.br`); cookie SameSite=Lax.
+- **Decisão:** POSTs autenticados (e criação de convite) exigem `Origin` igual a `APP_URL`. Com `COOKIE_SECURE=false`, também `http://localhost:5173` e `http://127.0.0.1:5173`. Sem CORS amplo, sem CSRF token extra nesta etapa.
+- **Por quê:** o cookie não deve ser enviado em POST cross-site típico; a checagem de Origin fecha o furo same-site de formulários de outros paths se a origem divergir.
+- **Consequência:** o cliente usa `credentials: 'include'` e caminhos relativos `/api/…`.
+
+---
+
+## ADR-022 — SMTP e MariaDB não são atômicos; rastreio de envio
+
+- **Status:** aceita
+- **Contexto:** gravar o convite e enviar o e-mail não cabem numa transação única.
+- **Decisão:** COMMIT do `token_hash` primeiro; depois SMTP. Sucesso grava `email_enviado_em` e limpa `erro_envio_em`. Falha mantém a linha pendente, grava `erro_envio_em` e devolve HTTP 502 (“Convite criado, mas o e-mail não foi enviado.”) **sem rollback**. O token original não fica no banco nem na API administrativa. Sem reenvio nesta etapa.
+- **Por quê:** rollback após COMMIT não desfaz o e-mail; guardar o token em claro para “tentar de novo” quebraria o modelo de hash.
+- **Consequência:** se o SMTP falhar, aquele token está perdido de propósito. Se o e-mail sair e o UPDATE de `email_enviado_em` falhar, o link continua válido pelo `token_hash` já commitado.
+
+---
+
+## ADR-023 — Timestamps persistidos em UTC
+
+- **Status:** aceita
+- **Contexto:** a VPS pode ter fuso distinto do horário de apresentação (America/Sao_Paulo).
+- **Decisão:** helper `agora_utc()` (UTC ingênuo em `DATETIME`). Sem `NOW()` do MariaDB e sem fuso da VPS na lógica de expiração de convite/sessão/bloqueio.
+- **Por quê:** expiração previsível e testes determinísticos.
+- **Consequência:** conversão para horário de Brasília só na apresentação, em etapa posterior se necessário. A listagem atual mostra o instante com sufixo `UTC`.
 
 ---
 

@@ -57,9 +57,21 @@ Não inicia Vite, não mexe em Apache, systemd, FastAPI nem MariaDB.
 
 ### Backend (ainda manual)
 
-O runtime `/home/flivocom/pi4-backend` **não** entra neste workflow.
+O runtime `/home/flivocom/pi4-backend` **não** entra neste workflow. **Não** aplicar Alembic nem criar o usuário mestre nesta etapa (ADR-012 pendente).
 
-Quando o Vite existir, o document root deve receber o **resultado do build** (`dist/`), não `node_modules/` nem um processo Node em produção. Node.js não é daemon do PI. O processo persistente continua sendo só o FastAPI via systemd.
+Quando houver autorização, a ordem prevista no runtime (documentada, não executada agora) é:
+
+1. copiar o código para `/home/flivocom/pi4-backend` (sem `.env` do Git);
+2. no venv 3.12: `pip install -r requirements.txt`;
+3. conferir `/home/flivocom/pi4-backend/.env` (SMTP, `APP_URL`, `COOKIE_SECURE=true`);
+4. `alembic upgrade head` **depois** da rotação ADR-012;
+5. `SHOW CREATE TABLE usuarios;` (e convites/sessões) — gate MariaDB;
+6. `python scripts/criar_usuario_mestre.py` (interativo; aborta se já houver mestre);
+7. `systemctl restart pi4-backend`.
+
+CI de backend **futuro** (só descrição): checkout, Python 3.12, `pip install -r requirements-dev.txt`, `pytest`; no servidor, os passos 2–4 e 7. Sem Docker, sem segundo banco, sem workflow nesta etapa.
+
+O document root recebe o **resultado do build** (`dist/`), não `node_modules/` nem um processo Node. Node.js não é daemon do PI.
 
 Node na VPS: **24.21.0** via NVM 0.40.7 do usuário `flivocom`. Não alterar Node global/cPanel.
 
@@ -105,7 +117,7 @@ A API não deve ser exposta diretamente na porta 8000 para a internet.
 | Host | localhost |
 | Porta | 3306 |
 
-Não usar root da aplicação. Não acessar bancos de outros sistemas. Não criar tabelas nesta fase.
+Não usar root da aplicação. Não acessar bancos de outros sistemas. Não aplicar DDL analítico. A migration de identidade existe no Git e **não** deve ser aplicada enquanto a senha do ADR-012 não for rotacionada.
 
 O MCP MySQL eventualmente disponível no Cursor de um desenvolvedor **não** é, por padrão, o banco do PI. Não consultar outros schemas.
 
@@ -119,7 +131,7 @@ O MCP MySQL eventualmente disponível no Cursor de um desenvolvedor **não** é,
 | `GET https://pi4.flivo.com.br/` | Confirmado: HTML da página de fumaça publicado |
 | `GET https://pi4.flivo.com.br/api/status/banco` | Não confirmado nesta inspeção (timeout). Permanece como validação prévia de ambiente |
 
-O frontend publicado ainda é o smoke test do repositório (títulos e checagem de API). O fetch estático da página não executa o JavaScript; isso não indica falha do browser real.
+O frontend publicado nesta inspeção ainda era o smoke test. Depois do próximo publish do `dist/`, `GET /` deve devolver o HTML de login (HTTP 200). O fetch estático da página não executa o JavaScript.
 
 ---
 

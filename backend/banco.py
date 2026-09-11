@@ -1,26 +1,23 @@
-import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 
-from dotenv import load_dotenv
-from sqlalchemy import create_engine, text
-from urllib.parse import quote_plus
-
-load_dotenv()
-
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = quote_plus(os.getenv("DB_PASSWORD"))
-
-DATABASE_URL = (
-    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}"
-    f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-)
+import config
 
 engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True
+    config.DATABASE_URL,
+    pool_pre_ping=True,
 )
+
+SessaoLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
+
+def obter_sessao():
+    sessao = SessaoLocal()
+    try:
+        yield sessao
+    finally:
+        sessao.close()
 
 
 def testar_conexao():
@@ -31,7 +28,7 @@ def testar_conexao():
 
         return {
             "banco": resultado[0],
-            "versao": resultado[1]
+            "versao": resultado[1],
         }
 
 

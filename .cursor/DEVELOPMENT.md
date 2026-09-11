@@ -33,10 +33,11 @@ Quando uma alteração for estrutural, consultar antes: `PROJECT.md`, `DECISIONS
 
 - Python do projeto: **3.12** (na VPS, 3.12.14 no virtualenv).
 - Python do sistema da VPS: 3.9 — **não substituir**.
-- Dependências: `backend/requirements.txt` (freeze, não lista mínima).
+- Dependências de runtime: `backend/requirements.txt` (lista **direta**, não freeze transitivo).
+- Dependências de teste: `backend/requirements-dev.txt` (`pytest`, `httpx`).
 - Configuração local/runtime: arquivo `.env` **não versionado**, baseado em `.env.example`.
 
-Variáveis esperadas:
+Variáveis esperadas (placeholders em `.env.example`):
 
 ```
 DB_HOST
@@ -44,13 +45,41 @@ DB_PORT
 DB_NAME
 DB_USER
 DB_PASSWORD
+APP_URL
+CONVITE_EXPIRACAO_HORAS
+SESSAO_DURACAO_HORAS
+COOKIE_SECURE
+SMTP_HOST
+SMTP_PORT
+SMTP_USER
+SMTP_PASSWORD
+SMTP_FROM
+SMTP_USE_SSL
 ```
 
-`backend/banco.py` monta `mysql+pymysql://...` e aplica `urllib.parse.quote_plus` na senha.
+`backend/config.py` monta `mysql+pymysql://...` (ou `DATABASE_URL`) e aplica `urllib.parse.quote_plus` na senha.
+
+Comandos a partir de `backend/` (venv 3.12):
+
+```
+python -m pip install -r requirements-dev.txt
+python -m pytest
+```
+
+**Aviso:** a suíte usa SQLite em memória e **não** valida o schema MariaDB. O gate MariaDB é manual (`alembic upgrade head` + `SHOW CREATE TABLE`) e só depois da ADR-012.
+
+Alembic e o script do mestre também a partir de `backend/`:
+
+```
+alembic upgrade head
+python scripts/criar_usuario_mestre.py
+```
+
+Nenhum dos dois deve rodar em produção nesta etapa.
 
 ### Observação para desenvolvimento local em Windows
 
-O freeze inclui `uvloop`, típico de Linux. Instalar `requirements.txt` à risca em Windows pode falhar. Isso não muda a stack de produção (AlmaLinux). Se for necessário um ambiente local Windows, tratar como exceção documentada — não remover `uvloop` do freeze de produção sem decisão explícita.
+A lista direta não inclui `uvloop`. Produção na VPS continua Linux + Uvicorn. Não adicionar freeze transitivo de volta sem decisão.
 
 ---
 
@@ -122,7 +151,7 @@ Não versionar chave privada, `mcp.json` com senha nem o script de túnel no Git
 
 Stack congelada: Vanilla JS (ES Modules), HTML5, CSS próprio, Plotly.js. Toolchain: **Node.js 24 LTS**, **npm**, **Vite 8.x**. Detalhe visual/a11y: `UI.md`. Decisões: ADR-013 a ADR-016.
 
-Estado do código: Vite 8, npm, ESLint, Prettier e `plotly.js-dist-min` estão no `frontend/`. A tela atual continua sendo a prova de `/api/status` e `/api/status/banco` (não o dashboard). Plotly está nas dependências e **não** é importado nesta página, para não inflar o bundle antes dos gráficos.
+Estado do código: Vite 8 MPA (login, painel, convite, convites). Plotly está nas dependências e **não** é importado, para não inflar o bundle antes dos gráficos. `GET /api/status` permanece na API; a home pública é o login, não a tela de status.
 
 Comandos (dentro de `frontend/`):
 
@@ -153,7 +182,7 @@ Node local observado nesta máquina: 24.16.0. VPS validada: Node 24.21.0 via NVM
 | JS unitário | Vitest | Aprovado, **não** instalado |
 | E2E | Playwright | Aprovado, **não** instalado |
 | A11y automatizada | axe-core | Aprovado, **não** instalado |
-| Python | pytest | Aprovado, **não** instalado |
+| Python | pytest | Configurado (`backend/requirements-dev.txt`, SQLite em memória) |
 
 Avaliação de acessibilidade combina ferramenta + teclado + foco + contraste + zoom + reflow + semântica + revisão humana.
 
@@ -161,4 +190,8 @@ Avaliação de acessibilidade combina ferramenta + teclado + foco + contraste + 
 
 ## Testes
 
-Ainda não há testes. Ferramentas aprovadas: pytest (backend); Vitest e Playwright (frontend, depois). Priorizar partes críticas: conexão/configuração sem vazar segredo, montagem de filtros, regras de agregação, ausência de leakage no ML e, no cliente, estados de erro/loading e acessibilidade básica.
+Backend: pytest + TestClient + SQLite em memória; SMTP mockado. **Não** substitui conferir a migration no MariaDB.
+
+Cobertura desta etapa: hash Argon2id, token só em hash, convite expirado/usado, login ok/erro genérico, bloqueio, sessão expirada rejeitada, logout, 401, 403, e-mail já existente, segundo convite pendente, aceite que não se repete, falha SMTP que grava `erro_envio_em` sem apagar o convite.
+
+Frontend: Vitest e Playwright continuam aprovados e **não** instalados. Lint/format/build: `npm run check` em `frontend/`.

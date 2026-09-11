@@ -1,8 +1,10 @@
 # Dados e modelagem
 
-O schema **não está fechado**. Não criar tabelas, colunas ou migrations a partir deste documento.
+O schema **analítico** não está fechado. Não criar tabelas, colunas ou migrations de **chamados** a partir deste documento.
 
 A fonte de dados reais ainda precisa ser descoberta, inventariada e compreendida. Ver próxima fase em `ROADMAP.md`.
+
+As tabelas de identidade (`usuarios`, `convites_usuarios`, `sessoes_usuarios`) existem no Alembic do backend e **não** são o schema analítico. Não aplicá-las no MariaDB até a rotação ADR-012 e autorização explícita.
 
 ---
 
@@ -10,7 +12,7 @@ A fonte de dados reais ainda precisa ser descoberta, inventariada e compreendida
 
 - Banco de aplicação: `flivocom_pi4`.
 - Usuário de aplicação informado: `flivocom_pi4app@localhost`.
-- O banco está vazio ou praticamente no estado inicial (informação de ambiente; o repositório não contém schema).
+- O banco de produção ainda não recebeu a migration de identidade (gate manual pendente).
 - Não há pasta `sql/` no repositório.
 - Não há amostra de dados versionada — e dados reais identificáveis **não** devem ir para o GitHub.
 
@@ -18,7 +20,7 @@ A fonte de dados reais ainda precisa ser descoberta, inventariada e compreendida
 
 ## Estratégia
 
-Antes de qualquer CREATE TABLE:
+Antes de qualquer CREATE TABLE **analítico**:
 
 1. identificar a fonte real (tabela operacional, CSV, exportação, API interna);
 2. listar campos existentes e o significado de cada um;

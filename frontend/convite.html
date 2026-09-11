@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PI4 UNIVESP — Aceitar convite</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="app-header">
+      <p>PI4 UNIVESP</p>
+      <h1>Definir senha</h1>
+    </header>
+    <main id="conteudo" class="app-main">
+      <p id="bloco-invalido" hidden>
+        Este convite é inválido, expirado ou já foi utilizado.
+      </p>
+      <div id="bloco-formulario" hidden>
+        <p>Olá, <strong id="nome-convidado"></strong>.</p>
+        <p>E-mail: <strong id="email-convidado"></strong></p>
+        <p class="intro">
+          Defina a sua senha definitiva. Mínimo de 12 caracteres. Use um
+          gerenciador de senhas se preferir.
+        </p>
+        <form id="form-aceite">
+          <div class="campo">
+            <label for="senha">Nova senha</label>
+            <input
+              id="senha"
+              name="senha"
+              type="password"
+              autocomplete="new-password"
+              minlength="12"
+              maxlength="128"
+              required
+            />
+          </div>
+          <div class="campo">
+            <label for="confirmacao">Confirmar nova senha</label>
+            <input
+              id="confirmacao"
+              name="confirmacao"
+              type="password"
+              autocomplete="new-password"
+              minlength="12"
+              maxlength="128"
+              required
+            />
+          </div>
+          <button type="submit" class="botao">Criar conta</button>
+        </form>
+        <p id="aviso-convite" class="aviso" hidden aria-live="polite"></p>
+      </div>
+      <div id="bloco-sucesso" hidden>
+        <p>OK — a conta foi criada.</p>
+        <p><a href="/">Ir para o login</a></p>
+      </div>
+    </main>
+    <script type="module" src="/src/paginas/aceitar-convite.js"></script>
+  </body>
+</html>

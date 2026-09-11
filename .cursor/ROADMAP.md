@@ -22,6 +22,7 @@ Itens abaixo são informação de ambiente fornecida e já validada, salvo onde 
 | Browser chamando API | OK — `GET /api/status` confirmado nesta inspeção |
 | Git + GitHub (`main` sincronizado) | OK — confirmado no clone local |
 | Stack frontend (Vite 8 / Node 24 LTS / Vanilla / WCAG 2.2 AA) | OK no repositório (toolchain); build **não** publicado |
+| Identidade e acesso (código + testes SQLite + Alembic) | OK no repositório; **sem** migration/mestre/deploy |
 
 `GET /api/status/banco` não respondeu a tempo nesta inspeção; a validação prévia do grupo permanece como referência de ambiente.
 
@@ -46,15 +47,16 @@ Não avançar à modelagem enquanto a senha antiga (já presente no histórico d
 | Processo de importação | Não iniciado |
 | Anonimização definitiva | Não iniciado |
 | Endpoints reais do dashboard | Não iniciado |
-| Layout/dashboard | Não iniciado (status de ambiente com Vite; sem gráficos) |
+| Layout/dashboard | Não iniciado (home = login MPA; sem gráficos) |
 | Node.js 24 LTS / npm na VPS e no PC de desenvolvimento | VPS: 24.21.0 (NVM); local observado: 24.16.0 |
 | Inicialização Vite + Plotly + tooling frontend | Vite/ESLint/Prettier no repo; Plotly nas deps, sem gráfico; **sem deploy** |
 | Análises estatísticas | Não iniciado |
 | Problema de ML fechado | Não iniciado |
 | Treino, avaliação e integração de ML | Não iniciado |
-| Processo formal de deploy | Não iniciado |
+| Processo formal de deploy | Frontend: workflow SSH (ADR-017). Backend: ainda manual; CI só descrito |
+| Testes de identidade | pytest SQLite no repo; **não** valida schema MariaDB |
+| Testes finais / dashboard | Não iniciado |
 | Documentação acadêmica final | Não iniciado |
-| Testes finais | Não iniciado |
 
 Pastas planejadas `sql/` e `ml/` **não existem** no repositório. Isso é ausência de fase, não bug a "corrigir" agora.
 
@@ -67,6 +69,7 @@ Pastas planejadas `sql/` e `ml/` **não existem** no repositório. Isso é ausê
 0.1 Congelar stack frontend / UI / WCAG     ← concluído (documental)
 0.2 Auditoria Node.js 24 LTS + npm           ← concluída (ambiente)
 0.3 Toolchain Vite no repositório            ← concluída (sem publish)
+0.4 Identidade e acesso (código)             ← concluída no Git; sem aplicar na VPS
         ↓
 1. Análise e modelagem dos dados             ← ainda bloqueada pela rotação da senha (ADR-012)
         ↓
@@ -85,7 +88,7 @@ Pastas planejadas `sql/` e `ml/` **não existem** no repositório. Isso é ausê
 8. Deploy simples, testes e texto acadêmico
 ```
 
-A auditoria 0.2 e a toolchain 0.3 **não** criam schema nem dashboard. O `dist/` **não** foi copiado para a VPS.
+A auditoria 0.2 e a toolchain 0.3 **não** criam schema analítico nem dashboard. A etapa 0.4 versiona identidade (Alembic) **sem** `alembic upgrade` na VPS. O `dist/` **não** foi copiado para a VPS neste passo.
 
 Dependência dura no domínio: **1 bloqueia 2**. **2 bloqueia 3 e 5**. **3 e 4 podem se sobrepor** depois do contrato mínimo da API. **5 bloqueia 6**. **6 bloqueia 7**.
 
@@ -93,7 +96,10 @@ Dependência dura no domínio: **1 bloqueia 2**. **2 bloqueia 3 e 5**. **3 e 4 p
 
 ## Próxima tarefa na VPS — não executar até autorização
 
-Publicar o `frontend/dist` no document root só depois de `npm ci` + `npm run build` na VPS (Node 24 via NVM do `flivocom`), sem alterar Apache de outros sítios nem o backend.
+Ordem prevista, **depois** da rotação ADR-012 e de autorização explícita:
+
+1. publicar `frontend/dist` (login MPA) via o workflow de frontend ou o processo já documentado;
+2. no runtime backend: `pip install`, `alembic upgrade head`, `SHOW CREATE TABLE`, `criar_usuario_mestre.py`, `systemctl restart pi4-backend`.
 
 A fase 1 (dados) permanece bloqueada enquanto a senha do ADR-012 não for rotacionada. Critério: fonte, dicionário, volume/qualidade, anonimização, schema mínimo justificado; ver `DATA.md`.
 
@@ -113,7 +119,8 @@ Ainda assim, implementação de API analítica, gráficos com dados e ML esperam
 
 ## O que nenhum agente deve fazer até a fase correspondente
 
-- criar tabelas ou "completar" o modelo;
+- criar tabelas analíticas ou "completar" o modelo de chamados;
+- aplicar Alembic ou o script do mestre em produção sem autorização e sem ADR-012;
 - implementar dashboard Plotly;
 - treinar ou escolher algoritmo de ML como decisão fechada;
 - gerar dados fictícios para parecer pronto;

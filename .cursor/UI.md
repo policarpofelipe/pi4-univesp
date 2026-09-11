@@ -65,6 +65,18 @@ Respeitar `prefers-reduced-motion`. Evitar animação decorativa ou movimento se
 
 ---
 
+## Páginas desta etapa (MPA)
+
+Home pública: **login** (`index.html`) — bloco institucional (título do PI e integrantes com RA) + formulário Entrar. Sem cadastro e sem “esqueci senha”.
+
+Autenticadas: `painel.html` (placeholder do dashboard) e `convites.html` (só perfil mestre).
+
+Pública com token: `convite.html` lê `#token=`, valida, remove o fragmento da barra (`replaceState`), pede senha definitiva (`autocomplete="new-password"`).
+
+Estados de formulário: texto + `data-estado` (`ok` / `erro` / `carregando`). A cor não é o único sinal — as mensagens começam com “OK —”, “Erro —” ou “Enviando —”.
+
+---
+
 ## Formulários
 
 Todo `input` com `label` identificável. Placeholder não substitui label. Erro não pode ser só pela cor. Mensagens devem dizer o problema com clareza.

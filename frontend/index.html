@@ -3,51 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PI4 UNIVESP — Status do ambiente</title>
+    <title>PI4 UNIVESP — Entrar</title>
   </head>
   <body>
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
-
-    <header class="app-header">
-      <p>Projeto Integrador 4 — UNIVESP</p>
-      <h1>Análise de Dados do Suporte Técnico</h1>
-    </header>
-
-    <main id="conteudo" class="app-main">
-      <section aria-labelledby="titulo-status">
-        <h2 id="titulo-status">Status do ambiente</h2>
+    <div class="layout-login">
+      <header class="bloco-institucional">
+        <p>Projeto Integrador IV</p>
+        <h1>PI4 UNIVESP</h1>
+        <p>Análise de Dados do Suporte Técnico</p>
+        <p>Engenharia de Computação — UNIVESP</p>
+        <p>2º semestre de 2026</p>
+        <h2>Integrantes</h2>
+        <ul>
+          <li>ANA FLAVIA DAMASCENO SILVA — RA 24217048</li>
+          <li>TULLIO CESAR LEITE SANTOS — RA 23201546</li>
+          <li>CARLOS ALBERTO LEITE SANTOS — RA 23203225</li>
+          <li>ALEX FERNANDES DE SOUZA — RA 24210638</li>
+          <li>LETICIA TOSHIE NASCIMENTO KURANAGA — RA 24205903</li>
+          <li>ISABELLA APARECIDA MARZOLA — RA 23208128</li>
+          <li>DAVI COSTA BASTOS — RA 23212266</li>
+          <li>FELIPE MARTINS POLICARPO — RA 23200830</li>
+        </ul>
+      </header>
+      <main id="conteudo" class="bloco-autenticacao">
+        <h2>Entrar</h2>
         <p class="intro">
-          Verificação da API FastAPI e da conexão com o MariaDB. Esta tela ainda
-          não é o dashboard analítico.
+          Acesso restrito a pessoas convidadas. Não há cadastro público.
         </p>
-
-        <dl>
-          <div class="status-list">
-            <div class="status-item" id="item-backend" data-estado="carregando">
-              <dt id="rotulo-backend">Backend</dt>
-              <dd
-                id="backend"
-                aria-live="polite"
-                aria-labelledby="rotulo-backend"
-              >
-                Carregando — verificando backend…
-              </dd>
-            </div>
-            <div class="status-item" id="item-banco" data-estado="carregando">
-              <dt id="rotulo-banco">Banco de dados</dt>
-              <dd id="banco" aria-live="polite" aria-labelledby="rotulo-banco">
-                Carregando — verificando banco…
-              </dd>
-            </div>
+        <form id="form-login">
+          <div class="campo">
+            <label for="email">E-mail</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="username"
+              required
+            />
           </div>
-        </dl>
-
-        <button type="button" class="botao" id="atualizar-status">
-          Atualizar status
-        </button>
-      </section>
-    </main>
-
-    <script type="module" src="/src/main.js"></script>
+          <div class="campo">
+            <label for="senha">Senha</label>
+            <input
+              id="senha"
+              name="senha"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+          <button type="submit" class="botao">Entrar</button>
+        </form>
+        <p id="aviso-login" class="aviso" hidden aria-live="polite"></p>
+      </main>
+    </div>
+    <script type="module" src="/src/paginas/login.js"></script>
   </body>
 </html>

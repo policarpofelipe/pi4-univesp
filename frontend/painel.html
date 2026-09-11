@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PI4 UNIVESP — Painel</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="app-header">
+      <p>PI4 UNIVESP</p>
+      <h1>Painel</h1>
+    </header>
+    <main id="conteudo" class="app-main">
+      <p>Usuário: <strong id="nome-usuario">…</strong></p>
+      <p>Perfil: <strong id="perfil-usuario">…</strong></p>
+      <p>Dashboard em desenvolvimento.</p>
+      <p id="acesso-convites" hidden>
+        <a href="/convites.html">Gerenciar convites</a>
+      </p>
+      <p id="aviso-painel" class="aviso" hidden aria-live="polite"></p>
+      <button type="button" class="botao" id="botao-sair">Sair</button>
+    </main>
+    <script type="module" src="/src/paginas/painel.js"></script>
+  </body>
+</html>

@@ -28,4 +28,4 @@ Padrões internos (não são a norma): alvo primário ~40–44 px; foco ~2px / 3
 
 Obrigatório na implementação: `lang="pt-BR"`; HTML semântico; teclado e foco visível; contraste; cor nunca como único significado; `prefers-reduced-motion`; label em inputs.
 
-O `index.html` atual é a tela de status da API, não o dashboard. Não implementar o dashboard fora da fase autorizada no `ROADMAP.md`.
+O `index.html` atual é a tela de login institucional. Páginas autenticadas: `painel.html` e `convites.html`. Convite público: `convite.html`. Não implementar o dashboard analítico fora da fase autorizada no `ROADMAP.md`.
