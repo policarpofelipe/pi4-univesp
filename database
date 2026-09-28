@@ -1,0 +1,106 @@
+CREATE DATABASE IF NOT EXISTS atendimento
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
+USE atendimento;
+
+DROP TABLE IF EXISTS atendimentos;
+
+CREATE TABLE atendimentos (
+    id                          BIGINT UNSIGNED AUTO_INCREMENT,
+    protocolo                   INT UNSIGNED NOT NULL,
+    id_ticket                   SMALLINT UNSIGNED NULL,
+
+    origem                      VARCHAR(10) NOT NULL,
+    contact_id                  VARCHAR(20) NULL,
+    conexao                     VARCHAR(10) NOT NULL,
+    user_id                     VARCHAR(20) NOT NULL,
+
+    criado                      DATETIME NOT NULL,
+    iniciado                    DATETIME NOT NULL,
+    fim                         DATETIME NOT NULL,
+
+    tempo_espera_segundos       INT UNSIGNED NOT NULL,
+    tempo_atendimento_segundos  INT UNSIGNED NOT NULL,
+
+    setores                     VARCHAR(20) NOT NULL,
+    setores_transfers           VARCHAR(100) NULL,
+
+    rating                      TINYINT UNSIGNED NULL,
+    tags                        VARCHAR(50) NULL,
+
+    PRIMARY KEY (id),
+
+    UNIQUE KEY uk_protocolo (protocolo),
+
+    KEY idx_criado (criado),
+    KEY idx_id_ticket (id_ticket),
+    KEY idx_contact_id (contact_id),
+    KEY idx_user_criado (user_id, criado),
+
+    CONSTRAINT chk_rating
+        CHECK (rating IS NULL OR rating BETWEEN 1 AND 5),
+
+    CONSTRAINT chk_datas
+        CHECK (iniciado >= criado AND fim >= iniciado)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
+
+
+INSERT INTO atendimentos (
+    protocolo,
+    id_ticket,
+    origem,
+    contact_id,
+    conexao,
+    user_id,
+    criado,
+    iniciado,
+    fim,
+    tempo_espera_segundos,
+    tempo_atendimento_segundos,
+    setores,
+    setores_transfers,
+    rating,
+    tags
+)
+VALUES
+    (...),
+    (...),
+    (...);
+
+
+-- ============================================================
+-- ALTERAÇÕES REALIZADAS:
+--
+-- 1. Ajustados os tipos de dados para melhor aproveitamento
+--    de espaço e representação dos valores reais da tabela.
+--
+-- 2. protocolo foi definido como UNIQUE, pois os 6.756 registros
+--    possuem protocolos únicos.
+--
+-- 3. avaliacao foi removida, pois estava NULL em todos os registros.
+--
+-- 4. interacoes foi removida, pois todos os registros possuíam
+--    valor 0.
+--
+-- 5. setores_transfers foi alterado de TEXT para VARCHAR(100),
+--    pois os valores encontrados não ultrapassam esse limite.
+--
+-- 6. Adicionados índices para melhorar consultas por data,
+--    ticket, contato e operador.
+--
+-- 7. Adicionado CHECK em rating para permitir somente valores
+--    entre 1 e 5 (ou NULL).
+--
+-- 8. Adicionado CHECK para garantir a ordem cronológica:
+--    criado <= iniciado <= fim.
+--
+-- 9. Os dados originais foram mantidos, removendo apenas os
+--    campos avaliacao e interacoes que não agregavam informação
+--    na carga analisada.
+-- ============================================================
+  
+
