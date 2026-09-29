@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PI4 UNIVESP — Painel</title>
   </head>
-  <body class="shell">
+  <body class="shell shell-painel">
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
     <header class="shell-top">
       <p class="shell-marca">PI4 UNIVESP</p>
@@ -23,9 +23,182 @@
     </header>
     <main id="conteudo" class="shell-main">
       <h1>Painel</h1>
-      <p class="lede">Análise de Dados do Suporte Técnico</p>
-      <p class="painel-vazio">Dashboard em desenvolvimento.</p>
+      <p class="lede">
+        Volume, tempo e avaliação dos atendimentos. Os filtros valem para todos
+        os indicadores abaixo. O horário é o que foi gravado no chamado.
+      </p>
       <p id="aviso-painel" class="aviso" hidden aria-live="polite"></p>
+      <form id="form-filtros" class="filtros-painel" hidden>
+        <div class="campo">
+          <label for="filtro-de">De</label>
+          <input id="filtro-de" name="de" type="date" />
+        </div>
+        <div class="campo">
+          <label for="filtro-ate">Até</label>
+          <input id="filtro-ate" name="ate" type="date" />
+        </div>
+        <div class="campo">
+          <label for="filtro-origem">Origem</label>
+          <select id="filtro-origem" name="origem">
+            <option value="">Todas</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtro-conexao">Conexão</label>
+          <select id="filtro-conexao" name="conexao">
+            <option value="">Todas</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtro-setores">Setor</label>
+          <select id="filtro-setores" name="setores">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtro-operador">Operador</label>
+          <select id="filtro-operador" name="user_id">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtro-rating">Avaliação</label>
+          <select id="filtro-rating" name="rating">
+            <option value="">Todas</option>
+            <option value="com">Com avaliação</option>
+            <option value="sem">Sem avaliação</option>
+            <option value="1">Nota 1</option>
+            <option value="2">Nota 2</option>
+            <option value="3">Nota 3</option>
+            <option value="4">Nota 4</option>
+            <option value="5">Nota 5</option>
+          </select>
+        </div>
+        <div class="filtros-acoes">
+          <button type="submit" class="botao" id="aplicar-filtros">
+            Aplicar filtros
+          </button>
+          <button
+            type="button"
+            class="botao botao-secundario"
+            id="limpar-filtros"
+          >
+            Limpar
+          </button>
+        </div>
+      </form>
+      <div id="analise" hidden>
+        <section aria-labelledby="titulo-kpis">
+          <h2 id="titulo-kpis">Indicadores do recorte</h2>
+          <div id="kpis" class="grade-kpis"></div>
+        </section>
+        <div id="vazio-analise" class="painel-vazio" hidden>
+          Nenhum atendimento neste recorte.
+        </div>
+        <div id="graficos-analise" class="grade-graficos">
+          <figure class="grafico">
+            <figcaption>
+              <h3>Volume por hora</h3>
+              <p class="grafico-pergunta">
+                Em quais horários a demanda é maior?
+              </p>
+              <p id="resumo-hora" class="grafico-resumo"></p>
+            </figcaption>
+            <div
+              id="plot-hora"
+              class="grafico-plot"
+              role="img"
+              aria-labelledby="resumo-hora"
+            ></div>
+          </figure>
+          <figure class="grafico">
+            <figcaption>
+              <h3>Volume por dia da semana</h3>
+              <p class="grafico-pergunta">
+                O sábado se destaca dos outros dias?
+              </p>
+              <p id="resumo-dia" class="grafico-resumo"></p>
+            </figcaption>
+            <div
+              id="plot-dia"
+              class="grafico-plot"
+              role="img"
+              aria-labelledby="resumo-dia"
+            ></div>
+          </figure>
+          <figure class="grafico grafico-largo">
+            <figcaption>
+              <h3>Série diária</h3>
+              <p class="grafico-pergunta">
+                Como o volume varia ao longo do período?
+              </p>
+              <p id="resumo-serie" class="grafico-resumo"></p>
+            </figcaption>
+            <div
+              id="plot-serie"
+              class="grafico-plot"
+              role="img"
+              aria-labelledby="resumo-serie"
+            ></div>
+          </figure>
+          <figure class="grafico grafico-largo">
+            <figcaption>
+              <h3>Dia e hora</h3>
+              <p class="grafico-pergunta">
+                Onde o volume se concentra na semana?
+              </p>
+              <p id="resumo-calor" class="grafico-resumo"></p>
+            </figcaption>
+            <div
+              id="plot-calor"
+              class="grafico-plot"
+              role="img"
+              aria-labelledby="resumo-calor"
+            ></div>
+          </figure>
+          <figure class="grafico">
+            <figcaption>
+              <h3>Tempos médios por hora</h3>
+              <p class="grafico-pergunta">
+                A espera e o atendimento mudam com a hora?
+              </p>
+              <p id="resumo-tempos" class="grafico-resumo"></p>
+            </figcaption>
+            <div
+              id="plot-tempos"
+              class="grafico-plot"
+              role="img"
+              aria-labelledby="resumo-tempos"
+            ></div>
+          </figure>
+          <figure class="grafico">
+            <figcaption>
+              <h3>Avaliações</h3>
+              <p class="grafico-pergunta">
+                Como as notas de 1 a 5 se distribuem?
+              </p>
+              <p id="resumo-rating" class="grafico-resumo"></p>
+            </figcaption>
+            <div
+              id="plot-rating"
+              class="grafico-plot"
+              role="img"
+              aria-labelledby="resumo-rating"
+            ></div>
+          </figure>
+        </div>
+        <section aria-labelledby="titulo-operadores">
+          <h2 id="titulo-operadores">Operadores</h2>
+          <div id="tabela-operadores"></div>
+        </section>
+        <section aria-labelledby="titulo-contatos">
+          <h2 id="titulo-contatos">Contatos com mais volume</h2>
+          <p class="grafico-pergunta">
+            Até 15 contatos do recorte, por quantidade de atendimentos.
+          </p>
+          <div id="tabela-contatos"></div>
+        </section>
+      </div>
     </main>
     <script type="module" src="/src/paginas/painel.js"></script>
   </body>

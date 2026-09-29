@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 
 from banco import testar_conexao
+from rotas_analise import router as rotas_analise
 from rotas_autenticacao import router as rotas_autenticacao
 from rotas_convites import router as rotas_convites
 
@@ -11,6 +12,7 @@ app = FastAPI(
 
 app.include_router(rotas_autenticacao)
 app.include_router(rotas_convites)
+app.include_router(rotas_analise)
 
 
 @app.get("/")

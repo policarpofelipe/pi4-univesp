@@ -56,6 +56,29 @@ class ConviteUsuario(Base):
     erro_envio_em: Mapped[object] = mapped_column(DateTime, nullable=True)
 
 
+class Atendimento(Base):
+    """Mapeia a tabela já existente. Não gera migration: o DDL está em `database`."""
+
+    __tablename__ = "atendimentos"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    protocolo: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
+    id_ticket: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    origem: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    contact_id: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    conexao: Mapped[str] = mapped_column(String(10), nullable=False)
+    user_id: Mapped[str] = mapped_column(String(20), nullable=False)
+    criado: Mapped[object] = mapped_column(DateTime, nullable=False)
+    iniciado: Mapped[object] = mapped_column(DateTime, nullable=False)
+    fim: Mapped[object] = mapped_column(DateTime, nullable=False)
+    tempo_espera_segundos: Mapped[int] = mapped_column(Integer, nullable=False)
+    tempo_atendimento_segundos: Mapped[int] = mapped_column(Integer, nullable=False)
+    setores: Mapped[str] = mapped_column(String(20), nullable=False)
+    setores_transfers: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    rating: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    tags: Mapped[str | None] = mapped_column(String(50), nullable=True)
+
+
 class SessaoUsuario(Base):
     __tablename__ = "sessoes_usuarios"
     __table_args__ = (UniqueConstraint("token_hash", name="uq_sessoes_token_hash"),)

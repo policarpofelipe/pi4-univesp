@@ -491,6 +491,105 @@ a:hover {
   box-shadow: var(--shadow-raised);
 }
 
+.shell-painel .shell-main {
+  width: min(100% - (var(--gutter) * 2), var(--content-width));
+}
+
+.filtros-painel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.filtros-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: end;
+}
+
+.grade-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-md);
+}
+
+.kpi {
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.kpi-rotulo {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.kpi-valor {
+  display: block;
+  margin-top: var(--space-xs);
+  color: var(--color-identity);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-tight);
+}
+
+.grade-graficos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.grafico {
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.grafico h3 {
+  margin: 0;
+  color: var(--color-identity);
+  font-size: var(--font-size-md);
+}
+
+.grafico-pergunta,
+.grafico-resumo {
+  margin: var(--space-xs) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.grafico-resumo {
+  color: var(--color-text);
+}
+
+.grafico-plot {
+  width: 100%;
+  min-height: 18rem;
+  margin-top: var(--space-md);
+}
+
+@media (min-width: 56rem) {
+  .grade-graficos {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grafico-largo {
+    grid-column: 1 / -1;
+  }
+}
+
 .tabela-envolve {
   overflow-x: auto;
   background: var(--color-surface-raised);
@@ -580,7 +679,8 @@ th {
 }
 
 @media (max-width: 40rem) {
-  .shell-main {
+  .shell-main,
+  .shell-painel .shell-main {
     width: calc(100% - var(--space-md) * 2);
   }
 
