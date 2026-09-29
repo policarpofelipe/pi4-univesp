@@ -60,6 +60,20 @@ def _convite_pendente(convite, agora):
     return status_aceitacao(convite, agora) == "pendente"
 
 
+def _dados_convite(convite, agora):
+    return {
+        "id": convite.id,
+        "nome": convite.nome,
+        "email": convite.email,
+        "criado_em": convite.criado_em.isoformat() + "Z",
+        "expira_em": convite.expira_em.isoformat() + "Z",
+        "status": status_convite(convite, agora),
+        "email_enviado": convite.email_enviado_em is not None,
+        "erro_envio": convite.erro_envio_em is not None
+        and convite.email_enviado_em is None,
+    }
+
+
 @router.post("", dependencies=[Depends(exigir_origem)])
 def criar_convite(
     dados: DadosConvite,
@@ -119,16 +133,7 @@ def criar_convite(
             detail="Convite criado, mas o e-mail não foi enviado.",
         )
 
-    return {
-        "id": convite.id,
-        "nome": convite.nome,
-        "email": convite.email,
-        "criado_em": convite.criado_em.isoformat() + "Z",
-        "expira_em": convite.expira_em.isoformat() + "Z",
-        "status": status_convite(convite, agora_utc()),
-        "email_enviado": True,
-        "erro_envio": False,
-    }
+    return _dados_convite(convite, agora_utc())
 
 
 @router.get("", dependencies=[Depends(exigir_origem)])
@@ -143,20 +148,76 @@ def listar_convites(
         .limit(50)
         .all()
     )
-    return [
-        {
-            "id": item.id,
-            "nome": item.nome,
-            "email": item.email,
-            "criado_em": item.criado_em.isoformat() + "Z",
-            "expira_em": item.expira_em.isoformat() + "Z",
-            "status": status_convite(item, agora),
-            "email_enviado": item.email_enviado_em is not None,
-            "erro_envio": item.erro_envio_em is not None
-            and item.email_enviado_em is None,
-        }
-        for item in itens
-    ]
+    return [_dados_convite(item, agora) for item in itens]
+
+
+@router.post("/{convite_id}/reenviar", dependencies=[Depends(exigir_origem)])
+def reenviar_convite(
+    convite_id: int,
+    sessao: Session = Depends(sessao_db),
+    _mestre: Usuario = Depends(exigir_usuario_mestre),
+):
+    agora = agora_utc()
+    convite = sessao.get(ConviteUsuario, convite_id)
+    if convite is None:
+        raise HTTPException(status_code=404, detail="Convite não encontrado.")
+    if status_convite(convite, agora) != "expirado":
+        raise HTTPException(
+            status_code=409,
+            detail="Só é possível reenviar um convite expirado.",
+        )
+
+    existente = sessao.query(Usuario).filter(Usuario.email == convite.email).first()
+    if existente and existente.ativo:
+        raise HTTPException(
+            status_code=409,
+            detail="Já existe um usuário ativo com este e-mail.",
+        )
+
+    outros = (
+        sessao.query(ConviteUsuario)
+        .filter(
+            ConviteUsuario.email == convite.email,
+            ConviteUsuario.id != convite.id,
+        )
+        .all()
+    )
+    if any(_convite_pendente(item, agora) for item in outros):
+        raise HTTPException(
+            status_code=409,
+            detail="Já existe um convite pendente para este e-mail.",
+        )
+
+    expiracao_anterior = convite.expira_em
+    token = gerar_token()
+    convite.token_hash = hash_token(token)
+    convite.expira_em = agora + timedelta(hours=config.CONVITE_EXPIRACAO_HORAS)
+    sessao.add(convite)
+    sessao.commit()
+
+    link = f"{config.APP_URL}/convite.html#token={token}"
+    try:
+        enviar_convite(
+            convite.nome,
+            convite.email,
+            link,
+            config.CONVITE_EXPIRACAO_HORAS,
+        )
+        convite.email_enviado_em = agora_utc()
+        convite.erro_envio_em = None
+        sessao.add(convite)
+        sessao.commit()
+    except FalhaEnvioEmail:
+        convite.expira_em = expiracao_anterior
+        convite.erro_envio_em = agora_utc()
+        sessao.add(convite)
+        sessao.commit()
+        raise HTTPException(
+            status_code=502,
+            detail="O e-mail não foi enviado. O convite continua expirado.",
+        )
+
+    return _dados_convite(convite, agora_utc())
 
 
 @router.post("/validar")

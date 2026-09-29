@@ -499,6 +499,10 @@ a:hover {
   box-shadow: var(--shadow-raised);
 }
 
+.tabela-envolve .botao {
+  white-space: nowrap;
+}
+
 .tabela-envolve caption {
   padding: var(--space-md) var(--space-md) 0;
 }

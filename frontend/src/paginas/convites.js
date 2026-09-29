@@ -1,6 +1,10 @@
 import "../styles/main.css";
 import { usuarioAtual } from "../api/autenticacao.js";
-import { criarConvite, listarConvites } from "../api/convites.js";
+import {
+  criarConvite,
+  listarConvites,
+  reenviarConvite,
+} from "../api/convites.js";
 
 const aviso = document.getElementById("aviso-convites");
 const formulario = document.getElementById("form-convite");
@@ -30,6 +34,17 @@ function formatarData(iso) {
   return iso.replace("T", " ").replace("Z", " UTC");
 }
 
+function acaoReenvio(item) {
+  if (item.status !== "expirado") {
+    return "—";
+  }
+  const id = Number(item.id);
+  if (!Number.isInteger(id)) {
+    return "—";
+  }
+  return `<button type="button" class="botao botao-secundario" data-reenviar="${id}">Reenviar</button>`;
+}
+
 function renderizar(convites) {
   if (!convites.length) {
     lista.innerHTML = '<p class="cartao">Nenhum convite ainda.</p>';
@@ -43,6 +58,7 @@ function renderizar(convites) {
         <td>${escapar(formatarData(item.criado_em))}</td>
         <td>${escapar(formatarData(item.expira_em))}</td>
         <td><span class="status-texto">${escapar(item.status)}</span></td>
+        <td>${acaoReenvio(item)}</td>
       </tr>`,
     )
     .join("");
@@ -54,6 +70,7 @@ function renderizar(convites) {
         <th scope="col">Criado em</th>
         <th scope="col">Expira em</th>
         <th scope="col">Status</th>
+        <th scope="col">Ação</th>
       </tr>
     </thead>
     <tbody>${linhas}</tbody>
@@ -105,6 +122,27 @@ formulario.addEventListener("submit", async (evento) => {
     }
   } finally {
     botao.disabled = false;
+  }
+});
+
+lista.addEventListener("click", async (evento) => {
+  const botaoReenvio = evento.target.closest("[data-reenviar]");
+  if (!botaoReenvio) {
+    return;
+  }
+  botaoReenvio.disabled = true;
+  mostrarAviso("Reenviando — aguarde…", "carregando");
+  try {
+    await reenviarConvite(botaoReenvio.dataset.reenviar);
+    mostrarAviso("OK — convite reenviado com um link novo.", "ok");
+    await carregarLista();
+  } catch (erro) {
+    mostrarAviso(`Erro — ${erro.message}`, "erro");
+    try {
+      await carregarLista();
+    } catch {
+      botaoReenvio.disabled = false;
+    }
   }
 });
 

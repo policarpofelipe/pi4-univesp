@@ -8,6 +8,10 @@ export function listarConvites() {
   return getJson("/api/convites");
 }
 
+export function reenviarConvite(id) {
+  return postJson(`/api/convites/${id}/reenviar`, {});
+}
+
 export function validarConvite(token) {
   return postJson("/api/convites/validar", { token });
 }
