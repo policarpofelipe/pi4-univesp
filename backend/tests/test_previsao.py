@@ -76,6 +76,35 @@ def test_serie_estavel_publica_o_baseline():
     assert artefato["futuro_horario"][0]["inicio"] > modelo["teste_ate"]
 
 
+def test_agregar_no_sqlite(sessao):
+    from modelos import Atendimento
+
+    from previsao_demanda import agregar_atendimentos
+
+    criado = datetime(2026, 8, 31, 9, 15)
+    sessao.add(
+        Atendimento(
+            protocolo=9001,
+            origem="Receptivo",
+            contact_id="Contato 1",
+            conexao="PDVx",
+            user_id="Operador 1",
+            criado=criado,
+            iniciado=criado,
+            fim=criado,
+            tempo_espera_segundos=120,
+            tempo_atendimento_segundos=300,
+            setores="Suporte",
+        )
+    )
+    sessao.commit()
+    contagens, operadores, clientes, espera = agregar_atendimentos(sessao)
+    assert sum(contagens.values()) == 1
+    assert operadores[0][2] == 1
+    assert clientes[0]["contact_id"] == "Contato 1"
+    assert espera["espera_depois"] == 120
+
+
 def test_inteligencia_exige_sessao(cliente):
     resposta = cliente.get("/api/analise/inteligencia")
     assert resposta.status_code == 401
@@ -102,3 +131,47 @@ def test_inteligencia_le_artefato(cliente, usuario_comum, monkeypatch, tmp_path)
     resposta = cliente.get("/api/analise/inteligencia")
     assert resposta.status_code == 200
     assert resposta.json()["modelo"]["publicado"] == "baseline_dia_hora"
+
+
+def test_treinar_exige_sessao(cliente):
+    resposta = cliente.post(
+        "/api/analise/inteligencia/treinar",
+        headers=cabecalho_origem(),
+    )
+    assert resposta.status_code == 401
+
+
+def test_treinar_recusa_origem(cliente, usuario_comum):
+    _entrar(cliente, usuario_comum.email, "senha-usuario-ok")
+    resposta = cliente.post("/api/analise/inteligencia/treinar")
+    assert resposta.status_code == 403
+
+
+def test_treinar_sem_atendimentos(cliente, usuario_comum):
+    _entrar(cliente, usuario_comum.email, "senha-usuario-ok")
+    resposta = cliente.post(
+        "/api/analise/inteligencia/treinar",
+        headers=cabecalho_origem(),
+    )
+    assert resposta.status_code == 400
+    assert "atendimentos" in resposta.json()["detail"]
+
+
+def test_treinar_devolve_artefato(cliente, usuario_comum, monkeypatch, tmp_path):
+    destino = tmp_path / "previsao_demanda.json"
+    monkeypatch.setattr(rotas_analise, "_ARTEFATO", destino)
+    artefato = {"disponivel": True, "modelo": {"publicado": "baseline_dia_hora"}}
+
+    def falso(sessao, caminho):
+        caminho.write_text(json.dumps(artefato), encoding="utf-8")
+        return artefato
+
+    monkeypatch.setattr(rotas_analise, "gravar_previsao", falso)
+    _entrar(cliente, usuario_comum.email, "senha-usuario-ok")
+    resposta = cliente.post(
+        "/api/analise/inteligencia/treinar",
+        headers=cabecalho_origem(),
+    )
+    assert resposta.status_code == 200
+    assert resposta.json()["disponivel"] is True
+    assert destino.is_file()

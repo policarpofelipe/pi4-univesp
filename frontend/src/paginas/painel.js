@@ -4,6 +4,7 @@ import {
   obterInteligencia,
   obterMetaAnalise,
   obterResumoAnalise,
+  treinarInteligencia,
 } from "../api/analise.js";
 import { sair, usuarioAtual } from "../api/autenticacao.js";
 
@@ -203,14 +204,17 @@ function renderizarInteligencia(dados) {
     agora.hidden = true;
     previsao.hidden = true;
     evidencia.hidden = true;
-    document.getElementById("intro-pontos").textContent =
-      dados.motivo || "A previsão ainda não foi treinada.";
+    document.getElementById("acao-previsao").hidden = Boolean(dados.erro);
+    document.getElementById("intro-pontos").textContent = dados.erro
+      ? dados.motivo
+      : "A previsão ainda não foi treinada. O treino usa os atendimentos já gravados e leva alguns segundos.";
     document.getElementById("lista-pontos").replaceChildren();
     return;
   }
   agora.hidden = false;
   previsao.hidden = false;
   evidencia.hidden = false;
+  document.getElementById("acao-previsao").hidden = true;
   awaitDesenho.length = 0;
 
   document.getElementById("intro-pontos").textContent =
@@ -675,6 +679,7 @@ async function iniciar() {
       obterMetaAnalise(),
       obterInteligencia().catch((erro) => ({
         disponivel: false,
+        erro: true,
         motivo: erro.message,
       })),
     ]);
@@ -703,6 +708,39 @@ botaoLimpar.addEventListener("click", () => {
   aplicarPeriodoPadrao();
   carregarResumo();
 });
+
+async function treinarPrevisao() {
+  const botoes = [
+    document.getElementById("botao-treinar"),
+    document.getElementById("botao-atualizar-previsao"),
+  ];
+  botoes.forEach((botao) => {
+    botao.disabled = true;
+  });
+  document.getElementById("intro-pontos").textContent =
+    "Treinando a previsão com os atendimentos gravados…";
+  try {
+    const artefato = await treinarInteligencia();
+    renderizarInteligencia(artefato);
+    await Promise.all(awaitDesenho);
+  } catch (erro) {
+    document.getElementById("intro-pontos").textContent = erro.message;
+    if (document.getElementById("secao-evidencia").hidden) {
+      document.getElementById("acao-previsao").hidden = false;
+    }
+  } finally {
+    botoes.forEach((botao) => {
+      botao.disabled = false;
+    });
+  }
+}
+
+document
+  .getElementById("botao-treinar")
+  .addEventListener("click", treinarPrevisao);
+document
+  .getElementById("botao-atualizar-previsao")
+  .addEventListener("click", treinarPrevisao);
 
 botaoSair.addEventListener("click", async () => {
   mostrarAviso("Encerrando sessão…", "carregando");

@@ -8,8 +8,10 @@ aprendizado não reduzir o MAE em pelo menos 5%.
 
 from __future__ import annotations
 
+import json
 import math
 from datetime import datetime, timedelta
+from pathlib import Path
 from statistics import median
 
 import numpy as np
@@ -595,3 +597,159 @@ def _dias_futuros(futuro, taxa, tipicos):
         for item in dias.values()
         if item["pico"] >= 0
     ]
+
+
+def _slot_hora(coluna, dialeto):
+    from sqlalchemy import Integer, cast, func
+
+    if dialeto == "sqlite":
+        return func.strftime("%Y-%m-%d %H:00:00", coluna), cast(
+            func.strftime("%H", coluna), Integer
+        )
+    return func.date_format(coluna, "%Y-%m-%d %H:00:00"), func.hour(coluna)
+
+
+def _como_datetime(valor):
+    if isinstance(valor, datetime):
+        return valor.replace(tzinfo=None)
+    return datetime.strptime(str(valor)[:19], "%Y-%m-%d %H:%M:%S")
+
+
+def _inteiro_opcional(valor):
+    if valor is None:
+        return None
+    return int(round(float(valor)))
+
+
+def agregar_atendimentos(sessao):
+    from sqlalchemy import and_, case, func
+
+    from modelos import Atendimento
+
+    fim = sessao.query(func.max(Atendimento.criado)).scalar()
+    if fim is None:
+        raise ValueError("Não há atendimentos para treinar a previsão.")
+    ultimo = _como_datetime(fim)
+    corte = datetime.combine(
+        ultimo.date() - timedelta(days=DIAS_RECENTES - 1),
+        datetime.min.time(),
+    )
+    dialeto = sessao.get_bind().dialect.name
+    slot, hora = _slot_hora(Atendimento.criado, dialeto)
+    contagens = {
+        _como_datetime(momento): int(volume)
+        for momento, volume in sessao.query(slot, func.count())
+        .group_by(slot)
+        .all()
+    }
+    operadores = [
+        (_como_datetime(momento), int(volume), int(pessoas))
+        for momento, volume, pessoas in sessao.query(
+            slot,
+            func.count(),
+            func.count(func.distinct(Atendimento.user_id)),
+        )
+        .filter(hora.between(HORA_INICIO, HORA_FIM))
+        .group_by(slot)
+        .all()
+    ]
+    clientes = [
+        {
+            "contact_id": contato,
+            "recentes": int(recentes or 0),
+            "anteriores": int(anteriores or 0),
+        }
+        for contato, recentes, anteriores in sessao.query(
+            Atendimento.contact_id,
+            func.sum(case((Atendimento.criado >= corte, 1), else_=0)),
+            func.sum(case((Atendimento.criado < corte, 1), else_=0)),
+        )
+        .filter(
+            Atendimento.contact_id.is_not(None),
+            Atendimento.contact_id != "",
+        )
+        .group_by(Atendimento.contact_id)
+        .all()
+    ]
+    diurno = hora.between(HORA_INICIO, HORA_FIM)
+    curto = 7200
+    espera = sessao.query(
+        func.round(
+            func.avg(
+                case(
+                    (
+                        and_(
+                            Atendimento.criado < corte,
+                            Atendimento.tempo_espera_segundos < curto,
+                        ),
+                        Atendimento.tempo_espera_segundos,
+                    ),
+                    else_=None,
+                )
+            )
+        ),
+        func.round(
+            func.avg(
+                case(
+                    (
+                        and_(
+                            Atendimento.criado >= corte,
+                            Atendimento.tempo_espera_segundos < curto,
+                        ),
+                        Atendimento.tempo_espera_segundos,
+                    ),
+                    else_=None,
+                )
+            )
+        ),
+        func.round(
+            func.avg(
+                case(
+                    (
+                        and_(
+                            Atendimento.criado < corte,
+                            Atendimento.tempo_atendimento_segundos < curto,
+                        ),
+                        Atendimento.tempo_atendimento_segundos,
+                    ),
+                    else_=None,
+                )
+            )
+        ),
+        func.round(
+            func.avg(
+                case(
+                    (
+                        and_(
+                            Atendimento.criado >= corte,
+                            Atendimento.tempo_atendimento_segundos < curto,
+                        ),
+                        Atendimento.tempo_atendimento_segundos,
+                    ),
+                    else_=None,
+                )
+            )
+        ),
+    ).filter(diurno).one()
+    return (
+        contagens,
+        operadores,
+        clientes,
+        {
+            "espera_antes": _inteiro_opcional(espera[0]),
+            "espera_depois": _inteiro_opcional(espera[1]),
+            "atendimento_antes": _inteiro_opcional(espera[2]),
+            "atendimento_depois": _inteiro_opcional(espera[3]),
+        },
+    )
+
+
+def gravar_previsao(sessao, caminho):
+    artefato = montar_artefato(*agregar_atendimentos(sessao))
+    destino = Path(caminho)
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    destino.write_text(
+        json.dumps(artefato, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    return artefato

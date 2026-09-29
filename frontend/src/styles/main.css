@@ -518,6 +518,14 @@ a:hover {
   line-height: var(--line-tight);
 }
 
+#acao-previsao {
+  margin: var(--space-md) 0 0;
+}
+
+.bloco-leitura .botao {
+  margin-top: var(--space-md);
+}
+
 .lista-pontos,
 #lista-limites {
   margin: 0;

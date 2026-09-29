@@ -1,4 +1,4 @@
-import { getJson } from "./client.js";
+import { getJson, postJson } from "./client.js";
 
 function consulta(caminho, filtros) {
   const params = new URLSearchParams();
@@ -21,4 +21,8 @@ export function obterResumoAnalise(filtros) {
 
 export function obterInteligencia() {
   return getJson("/api/analise/inteligencia");
+}
+
+export function treinarInteligencia() {
+  return postJson("/api/analise/inteligencia/treinar", {});
 }

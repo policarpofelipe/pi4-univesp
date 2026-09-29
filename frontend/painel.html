@@ -34,6 +34,11 @@
         <section aria-labelledby="titulo-pontos">
           <h2 id="titulo-pontos">Pontos de atenção</h2>
           <p id="intro-pontos" class="grafico-pergunta"></p>
+          <p id="acao-previsao" hidden>
+            <button type="button" class="botao" id="botao-treinar">
+              Treinar previsão
+            </button>
+          </p>
           <ul id="lista-pontos" class="lista-pontos"></ul>
         </section>
         <section id="secao-agora" aria-labelledby="titulo-agora">
@@ -105,6 +110,13 @@
             <h3 id="titulo-modelo">Confiança do método</h3>
             <dl id="leitura-modelo" class="leitura"></dl>
             <p id="texto-modelo"></p>
+            <button
+              type="button"
+              class="botao botao-secundario"
+              id="botao-atualizar-previsao"
+            >
+              Atualizar previsão
+            </button>
           </div>
           <h3>O que esta carga não sustenta</h3>
           <ul id="lista-limites"></ul>

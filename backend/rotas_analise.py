@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from dependencias import exigir_origem, obter_usuario_atual, sessao_db
 from modelos import Atendimento
+from previsao_demanda import gravar_previsao
 
 router = APIRouter(
     prefix="/api/analise",
@@ -378,9 +379,14 @@ def inteligencia_analise():
     if not _ARTEFATO.is_file():
         return {
             "disponivel": False,
-            "motivo": (
-                "A previsão ainda não foi treinada. "
-                "Rode backend/scripts/treinar_previsao.py."
-            ),
+            "motivo": "A previsão ainda não foi treinada.",
         }
     return json.loads(_ARTEFATO.read_text(encoding="utf-8"))
+
+
+@router.post("/inteligencia/treinar")
+def treinar_inteligencia(sessao: Session = Depends(sessao_db)):
+    try:
+        return gravar_previsao(sessao, _ARTEFATO)
+    except ValueError as erro:
+        raise HTTPException(status_code=400, detail=str(erro)) from erro
