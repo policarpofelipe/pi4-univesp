@@ -3,6 +3,7 @@ uvicorn[standard]==0.52.4
 SQLAlchemy==2.0.52
 pymysql[rsa]==1.2.0
 python-dotenv==1.2.3
+python-multipart==0.0.20
 pandas==3.0.5
 numpy==2.5.3
 scikit-learn==1.9.1

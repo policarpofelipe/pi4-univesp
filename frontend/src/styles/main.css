@@ -513,6 +513,33 @@ a:hover {
   align-items: end;
 }
 
+.grade-composicao {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+.grade-composicao h3 {
+  margin: 0 0 var(--space-sm);
+  color: var(--color-identity);
+  font-size: var(--font-size-md);
+}
+
+#resultado-importacao ul {
+  margin: var(--space-sm) 0 0;
+  padding-left: 1.25rem;
+}
+
+#baixar-modelo {
+  margin-top: var(--space-md);
+}
+
+@media (min-width: 56rem) {
+  .grade-composicao {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .grade-kpis {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));

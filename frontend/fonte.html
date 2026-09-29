@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PI4 UNIVESP — Fonte de dados</title>
+  </head>
+  <body class="shell shell-painel">
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="shell-top">
+      <p class="shell-marca">PI4 UNIVESP</p>
+      <nav class="shell-nav" aria-label="Principal">
+        <a href="/painel.html">Painel</a>
+        <a href="/fonte.html" aria-current="page">Fonte</a>
+        <a id="nav-convites" hidden href="/convites.html">Convites</a>
+      </nav>
+      <div class="shell-user">
+        <span id="nome-usuario">…</span>
+        <span id="perfil-usuario" class="perfil">…</span>
+        <button type="button" class="botao botao-secundario" id="botao-sair">
+          Sair
+        </button>
+      </div>
+    </header>
+    <main id="conteudo" class="shell-main">
+      <h1>Fonte de dados</h1>
+      <p class="lede">
+        Retrato da tabela de atendimentos que alimenta o painel. Um CSV no mesmo
+        formato acrescenta registros. Protocolo repetido e linha inválida não
+        entram e não apagam o que já está gravado. Use rótulos anonimizados,
+        como Operador N e Contato N.
+      </p>
+      <p id="aviso-fonte" class="aviso" hidden aria-live="polite"></p>
+      <section aria-labelledby="titulo-retrato">
+        <h2 id="titulo-retrato">Carga atual</h2>
+        <div id="retrato-fonte" class="grade-kpis"></div>
+      </section>
+      <section aria-labelledby="titulo-composicao">
+        <h2 id="titulo-composicao">Composição</h2>
+        <div id="composicao-fonte" class="grade-composicao"></div>
+      </section>
+      <section aria-labelledby="titulo-colunas">
+        <h2 id="titulo-colunas">Colunas do CSV</h2>
+        <p id="lista-colunas" class="cartao">Carregando…</p>
+        <button type="button" class="botao botao-secundario" id="baixar-modelo">
+          Baixar modelo
+        </button>
+      </section>
+      <section aria-labelledby="titulo-importar">
+        <h2 id="titulo-importar">Importar</h2>
+        <p class="grafico-pergunta">
+          Separador vírgula ou ponto e vírgula. Datas como AAAA-MM-DD HH:MM:SS,
+          no horário gravado do atendimento, sem fuso. Avaliação vazia ou de 1 a
+          5.
+        </p>
+        <form id="form-importar" class="filtros-painel">
+          <div class="campo">
+            <label for="arquivo-csv">Arquivo CSV</label>
+            <input
+              id="arquivo-csv"
+              name="arquivo"
+              type="file"
+              accept=".csv,text/csv"
+              required
+            />
+          </div>
+          <div class="filtros-acoes">
+            <button type="submit" class="botao" id="enviar-csv">
+              Importar CSV
+            </button>
+          </div>
+        </form>
+        <div id="resultado-importacao"></div>
+      </section>
+    </main>
+    <script type="module" src="/src/paginas/fonte.js"></script>
+  </body>
+</html>

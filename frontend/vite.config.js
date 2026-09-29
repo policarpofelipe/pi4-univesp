@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => {
         input: {
           main: `${raiz}/index.html`,
           painel: `${raiz}/painel.html`,
+          fonte: `${raiz}/fonte.html`,
           convite: `${raiz}/convite.html`,
           convites: `${raiz}/convites.html`,
         },

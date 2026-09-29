@@ -79,6 +79,26 @@ export async function postJson(caminho, corpo) {
   return texto ? JSON.parse(texto) : null;
 }
 
+export async function postArquivo(caminho, campo, arquivo) {
+  const dados = new FormData();
+  dados.append(campo, arquivo);
+  let resposta;
+  try {
+    resposta = await fetch(urlDaApi(caminho), {
+      method: "POST",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+      body: dados,
+    });
+  } catch {
+    throw new Error("Não foi possível conectar à API.");
+  }
+  if (!resposta.ok) {
+    throw new Error(await interpretarErro(resposta));
+  }
+  return resposta.json();
+}
+
 export function obterStatusBackend() {
   return getJson("/api/status");
 }
