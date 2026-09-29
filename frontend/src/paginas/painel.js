@@ -134,11 +134,12 @@ function layoutBase({ legenda = false, margemInferior = 48 } = {}) {
     plot_bgcolor: "rgba(0,0,0,0)",
     font: { family: token("--font-sans"), color: texto, size: 13 },
     margin: { t: 8, r: 16, b: margemInferior, l: 52 },
+    autosize: true,
     showlegend: legenda,
     legend: { orientation: "h", y: -0.25 },
     transition: { duration: reduzirMovimento ? 0 : 0 },
-    xaxis: { gridcolor: grade, zeroline: false },
-    yaxis: { gridcolor: grade, zeroline: false },
+    xaxis: { gridcolor: grade, zeroline: false, automargin: true },
+    yaxis: { gridcolor: grade, zeroline: false, automargin: true },
   };
 }
 

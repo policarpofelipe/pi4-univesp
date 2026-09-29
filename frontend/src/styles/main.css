@@ -506,11 +506,22 @@ a:hover {
   box-shadow: var(--shadow-raised);
 }
 
+.filtros-painel .campo {
+  margin-bottom: 0;
+}
+
 .filtros-acoes {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--space-sm);
-  align-items: end;
+  align-self: end;
+  align-items: center;
+}
+
+@media (min-width: 48rem) {
+  .filtros-painel .filtros-acoes {
+    grid-column: span 2;
+  }
 }
 
 .grade-composicao {
@@ -577,6 +588,7 @@ a:hover {
 }
 
 .grafico {
+  min-width: 0;
   margin: 0;
   padding: var(--space-md);
   background: var(--color-surface-raised);
@@ -603,18 +615,9 @@ a:hover {
 
 .grafico-plot {
   width: 100%;
+  max-width: 100%;
   min-height: 18rem;
   margin-top: var(--space-md);
-}
-
-@media (min-width: 56rem) {
-  .grade-graficos {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .grafico-largo {
-    grid-column: 1 / -1;
-  }
 }
 
 .tabela-envolve {
@@ -714,5 +717,9 @@ th {
   .shell-user {
     margin-left: 0;
     width: 100%;
+  }
+
+  .filtros-acoes {
+    flex-wrap: wrap;
   }
 }
