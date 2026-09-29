@@ -25,181 +25,269 @@
     <main id="conteudo" class="shell-main">
       <h1>Painel</h1>
       <p class="lede">
-        Volume, tempo e avaliação dos atendimentos. Os filtros valem para todos
-        os indicadores abaixo. O horário é o que foi gravado no chamado.
+        O que foge do padrão da própria operação, o que o histórico leva a
+        esperar em seguida, e se o ritmo da equipe cobre essa demanda. O detalhe
+        descritivo fica em Explorar histórico.
       </p>
       <p id="aviso-painel" class="aviso" hidden aria-live="polite"></p>
-      <form id="form-filtros" class="filtros-painel" hidden>
-        <div class="campo">
-          <label for="filtro-de">De</label>
-          <input id="filtro-de" name="de" type="date" />
-        </div>
-        <div class="campo">
-          <label for="filtro-ate">Até</label>
-          <input id="filtro-ate" name="ate" type="date" />
-        </div>
-        <div class="campo">
-          <label for="filtro-origem">Origem</label>
-          <select id="filtro-origem" name="origem">
-            <option value="">Todas</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="filtro-conexao">Conexão</label>
-          <select id="filtro-conexao" name="conexao">
-            <option value="">Todas</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="filtro-setores">Setor</label>
-          <select id="filtro-setores" name="setores">
-            <option value="">Todos</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="filtro-operador">Operador</label>
-          <select id="filtro-operador" name="user_id">
-            <option value="">Todos</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="filtro-rating">Avaliação</label>
-          <select id="filtro-rating" name="rating">
-            <option value="">Todas</option>
-            <option value="com">Com avaliação</option>
-            <option value="sem">Sem avaliação</option>
-            <option value="1">Nota 1</option>
-            <option value="2">Nota 2</option>
-            <option value="3">Nota 3</option>
-            <option value="4">Nota 4</option>
-            <option value="5">Nota 5</option>
-          </select>
-        </div>
-        <div class="filtros-acoes">
-          <button type="submit" class="botao" id="aplicar-filtros">
-            Aplicar filtros
-          </button>
-          <button
-            type="button"
-            class="botao botao-secundario"
-            id="limpar-filtros"
-          >
-            Limpar
-          </button>
-        </div>
-      </form>
-      <div id="analise" hidden>
-        <section aria-labelledby="titulo-kpis">
-          <h2 id="titulo-kpis">Indicadores do recorte</h2>
-          <div id="kpis" class="grade-kpis"></div>
+      <div id="inteligencia" hidden>
+        <section aria-labelledby="titulo-pontos">
+          <h2 id="titulo-pontos">Pontos de atenção</h2>
+          <p id="intro-pontos" class="grafico-pergunta"></p>
+          <ul id="lista-pontos" class="lista-pontos"></ul>
         </section>
-        <div id="vazio-analise" class="painel-vazio" hidden>
-          Nenhum atendimento neste recorte.
-        </div>
-        <div id="graficos-analise" class="grade-graficos">
-          <figure class="grafico">
-            <figcaption>
-              <h3>Volume por hora</h3>
-              <p class="grafico-pergunta">
-                Em quais horários a demanda é maior?
-              </p>
-              <p id="resumo-hora" class="grafico-resumo"></p>
-            </figcaption>
-            <div
-              id="plot-hora"
-              class="grafico-plot"
-              role="img"
-              aria-labelledby="resumo-hora"
-            ></div>
-          </figure>
-          <figure class="grafico">
-            <figcaption>
-              <h3>Volume por dia da semana</h3>
-              <p class="grafico-pergunta">
-                O sábado se destaca dos outros dias?
-              </p>
-              <p id="resumo-dia" class="grafico-resumo"></p>
-            </figcaption>
-            <div
-              id="plot-dia"
-              class="grafico-plot"
-              role="img"
-              aria-labelledby="resumo-dia"
-            ></div>
-          </figure>
-          <figure class="grafico grafico-largo">
-            <figcaption>
-              <h3>Série diária</h3>
-              <p class="grafico-pergunta">
-                Como o volume varia ao longo do período?
-              </p>
-              <p id="resumo-serie" class="grafico-resumo"></p>
-            </figcaption>
-            <div
-              id="plot-serie"
-              class="grafico-plot"
-              role="img"
-              aria-labelledby="resumo-serie"
-            ></div>
-          </figure>
-          <figure class="grafico grafico-largo">
-            <figcaption>
-              <h3>Dia e hora</h3>
-              <p class="grafico-pergunta">
-                Onde o volume se concentra na semana?
-              </p>
-              <p id="resumo-calor" class="grafico-resumo"></p>
-            </figcaption>
-            <div
-              id="plot-calor"
-              class="grafico-plot"
-              role="img"
-              aria-labelledby="resumo-calor"
-            ></div>
-          </figure>
-          <figure class="grafico">
-            <figcaption>
-              <h3>Tempos médios por hora</h3>
-              <p class="grafico-pergunta">
-                A espera e o atendimento mudam com a hora?
-              </p>
-              <p id="resumo-tempos" class="grafico-resumo"></p>
-            </figcaption>
-            <div
-              id="plot-tempos"
-              class="grafico-plot"
-              role="img"
-              aria-labelledby="resumo-tempos"
-            ></div>
-          </figure>
-          <figure class="grafico">
-            <figcaption>
-              <h3>Avaliações</h3>
-              <p class="grafico-pergunta">
-                Como as notas de 1 a 5 se distribuem?
-              </p>
-              <p id="resumo-rating" class="grafico-resumo"></p>
-            </figcaption>
-            <div
-              id="plot-rating"
-              class="grafico-plot"
-              role="img"
-              aria-labelledby="resumo-rating"
-            ></div>
-          </figure>
-        </div>
-        <section aria-labelledby="titulo-operadores">
-          <h2 id="titulo-operadores">Operadores</h2>
-          <div id="tabela-operadores"></div>
+        <section id="secao-agora" aria-labelledby="titulo-agora">
+          <h2 id="titulo-agora">Agora</h2>
+          <p id="aviso-agora" class="grafico-pergunta"></p>
+          <div class="bloco-leitura">
+            <dl id="leitura-agora" class="leitura"></dl>
+            <p id="texto-agora"></p>
+          </div>
         </section>
-        <section aria-labelledby="titulo-contatos">
-          <h2 id="titulo-contatos">Contatos com mais volume</h2>
-          <p class="grafico-pergunta">
-            Até 15 contatos do recorte, por quantidade de atendimentos.
-          </p>
-          <div id="tabela-contatos"></div>
+        <section id="secao-previsao" aria-labelledby="titulo-previsao">
+          <h2 id="titulo-previsao">Previsão</h2>
+          <p id="texto-previsao"></p>
+          <figure class="grafico">
+            <figcaption>
+              <h3>Volume previsto por dia</h3>
+              <p class="grafico-pergunta">
+                Quantos atendimentos o método publicado espera em cada um dos
+                sete dias seguintes ao fim da carga?
+              </p>
+            </figcaption>
+            <div
+              id="plot-dias"
+              class="grafico-plot"
+              role="img"
+              aria-labelledby="texto-previsao"
+            ></div>
+          </figure>
+          <div id="tabela-dias"></div>
+          <figure class="grafico">
+            <figcaption>
+              <h3>Demanda prevista e ritmo da equipe</h3>
+              <p class="grafico-pergunta">
+                Em quais horas a demanda prevista passa do ritmo histórico da
+                equipe típica?
+              </p>
+              <p id="texto-capacidade" class="grafico-resumo"></p>
+            </figcaption>
+            <div
+              id="plot-capacidade"
+              class="grafico-plot"
+              role="img"
+              aria-labelledby="texto-capacidade"
+            ></div>
+          </figure>
+          <details class="tabela-detalhe">
+            <summary>Tabela das horas previstas</summary>
+            <div id="tabela-horas"></div>
+          </details>
+        </section>
+        <section id="secao-evidencia" aria-labelledby="titulo-evidencia">
+          <h2 id="titulo-evidencia">Evidência da previsão</h2>
+          <figure class="grafico">
+            <figcaption>
+              <h3>Real e previsto no fim do teste</h3>
+              <p class="grafico-pergunta">
+                O método publicado acertaria as horas de operação da última
+                semana já ocorrida?
+              </p>
+            </figcaption>
+            <div
+              id="plot-real"
+              class="grafico-plot"
+              role="img"
+              aria-label="Série horária real e prevista na última semana do teste, em atendimentos por hora"
+            ></div>
+          </figure>
+          <div class="bloco-leitura">
+            <h3 id="titulo-modelo">Confiança do método</h3>
+            <dl id="leitura-modelo" class="leitura"></dl>
+            <p id="texto-modelo"></p>
+          </div>
+          <h3>O que esta carga não sustenta</h3>
+          <ul id="lista-limites"></ul>
         </section>
       </div>
+      <section aria-labelledby="titulo-explorar">
+        <h2 id="titulo-explorar">Explorar histórico</h2>
+        <p class="grafico-pergunta">
+          Os filtros valem só para esta seção. O horário é o que foi gravado no
+          chamado.
+        </p>
+        <form id="form-filtros" class="filtros-painel" hidden>
+          <div class="campo">
+            <label for="filtro-de">De</label>
+            <input id="filtro-de" name="de" type="date" />
+          </div>
+          <div class="campo">
+            <label for="filtro-ate">Até</label>
+            <input id="filtro-ate" name="ate" type="date" />
+          </div>
+          <div class="campo">
+            <label for="filtro-origem">Origem</label>
+            <select id="filtro-origem" name="origem">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="filtro-conexao">Conexão</label>
+            <select id="filtro-conexao" name="conexao">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="filtro-setores">Setor</label>
+            <select id="filtro-setores" name="setores">
+              <option value="">Todos</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="filtro-operador">Operador</label>
+            <select id="filtro-operador" name="user_id">
+              <option value="">Todos</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="filtro-rating">Avaliação</label>
+            <select id="filtro-rating" name="rating">
+              <option value="">Todas</option>
+              <option value="com">Com avaliação</option>
+              <option value="sem">Sem avaliação</option>
+              <option value="1">Nota 1</option>
+              <option value="2">Nota 2</option>
+              <option value="3">Nota 3</option>
+              <option value="4">Nota 4</option>
+              <option value="5">Nota 5</option>
+            </select>
+          </div>
+          <div class="filtros-acoes">
+            <button type="submit" class="botao" id="aplicar-filtros">
+              Aplicar filtros
+            </button>
+            <button
+              type="button"
+              class="botao botao-secundario"
+              id="limpar-filtros"
+            >
+              Limpar
+            </button>
+          </div>
+        </form>
+        <div id="analise" hidden>
+          <section aria-labelledby="titulo-kpis">
+            <h3 id="titulo-kpis">Indicadores do recorte</h3>
+            <div id="kpis" class="grade-kpis"></div>
+          </section>
+          <div id="vazio-analise" class="painel-vazio" hidden>
+            Nenhum atendimento neste recorte.
+          </div>
+          <div id="graficos-analise" class="grade-graficos">
+            <figure class="grafico">
+              <figcaption>
+                <h3>Volume por hora</h3>
+                <p class="grafico-pergunta">
+                  Em quais horários a demanda é maior?
+                </p>
+                <p id="resumo-hora" class="grafico-resumo"></p>
+              </figcaption>
+              <div
+                id="plot-hora"
+                class="grafico-plot"
+                role="img"
+                aria-labelledby="resumo-hora"
+              ></div>
+            </figure>
+            <figure class="grafico">
+              <figcaption>
+                <h3>Volume por dia da semana</h3>
+                <p class="grafico-pergunta">
+                  O sábado se destaca dos outros dias?
+                </p>
+                <p id="resumo-dia" class="grafico-resumo"></p>
+              </figcaption>
+              <div
+                id="plot-dia"
+                class="grafico-plot"
+                role="img"
+                aria-labelledby="resumo-dia"
+              ></div>
+            </figure>
+            <figure class="grafico grafico-largo">
+              <figcaption>
+                <h3>Série diária</h3>
+                <p class="grafico-pergunta">
+                  Como o volume varia ao longo do período?
+                </p>
+                <p id="resumo-serie" class="grafico-resumo"></p>
+              </figcaption>
+              <div
+                id="plot-serie"
+                class="grafico-plot"
+                role="img"
+                aria-labelledby="resumo-serie"
+              ></div>
+            </figure>
+            <figure class="grafico grafico-largo">
+              <figcaption>
+                <h3>Dia e hora</h3>
+                <p class="grafico-pergunta">
+                  Onde o volume se concentra na semana?
+                </p>
+                <p id="resumo-calor" class="grafico-resumo"></p>
+              </figcaption>
+              <div
+                id="plot-calor"
+                class="grafico-plot"
+                role="img"
+                aria-labelledby="resumo-calor"
+              ></div>
+            </figure>
+            <figure class="grafico">
+              <figcaption>
+                <h3>Tempos médios por hora</h3>
+                <p class="grafico-pergunta">
+                  A espera e o atendimento mudam com a hora?
+                </p>
+                <p id="resumo-tempos" class="grafico-resumo"></p>
+              </figcaption>
+              <div
+                id="plot-tempos"
+                class="grafico-plot"
+                role="img"
+                aria-labelledby="resumo-tempos"
+              ></div>
+            </figure>
+            <figure class="grafico">
+              <figcaption>
+                <h3>Avaliações</h3>
+                <p class="grafico-pergunta">
+                  Como as notas de 1 a 5 se distribuem?
+                </p>
+                <p id="resumo-rating" class="grafico-resumo"></p>
+              </figcaption>
+              <div
+                id="plot-rating"
+                class="grafico-plot"
+                role="img"
+                aria-labelledby="resumo-rating"
+              ></div>
+            </figure>
+          </div>
+          <section aria-labelledby="titulo-operadores">
+            <h3 id="titulo-operadores">Operadores</h3>
+            <div id="tabela-operadores"></div>
+          </section>
+          <section aria-labelledby="titulo-contatos">
+            <h3 id="titulo-contatos">Contatos com mais volume</h3>
+            <p class="grafico-pergunta">
+              Até 15 contatos do recorte, por quantidade de atendimentos.
+            </p>
+            <div id="tabela-contatos"></div>
+          </section>
+        </div>
+      </section>
     </main>
     <script type="module" src="/src/paginas/painel.js"></script>
   </body>

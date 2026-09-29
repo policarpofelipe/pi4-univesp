@@ -18,3 +18,7 @@ export function obterMetaAnalise() {
 export function obterResumoAnalise(filtros) {
   return consulta("/api/analise/resumo", filtros);
 }
+
+export function obterInteligencia() {
+  return getJson("/api/analise/inteligencia");
+}

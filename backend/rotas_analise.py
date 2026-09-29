@@ -1,4 +1,6 @@
 from datetime import date, datetime, timedelta
+import json
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import Integer, cast, func
@@ -24,6 +26,7 @@ _ROTULOS_DIA = (
 )
 _AVALIACOES = ("com", "sem", "1", "2", "3", "4", "5")
 _LIMITE_CONTATOS = 15
+_ARTEFATO = Path(__file__).resolve().parents[1] / "models" / "previsao_demanda.json"
 
 
 def _texto(valor):
@@ -368,3 +371,16 @@ def resumo_analise(
         "operadores": ranking(Atendimento.user_id),
         "contatos": ranking(Atendimento.contact_id, _LIMITE_CONTATOS),
     }
+
+
+@router.get("/inteligencia")
+def inteligencia_analise():
+    if not _ARTEFATO.is_file():
+        return {
+            "disponivel": False,
+            "motivo": (
+                "A previsão ainda não foi treinada. "
+                "Rode backend/scripts/treinar_previsao.py."
+            ),
+        }
+    return json.loads(_ARTEFATO.read_text(encoding="utf-8"))
