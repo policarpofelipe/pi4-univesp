@@ -22,6 +22,7 @@ export default defineConfig(({ mode }) => {
           main: `${raiz}/index.html`,
           painel: `${raiz}/painel.html`,
           fonte: `${raiz}/fonte.html`,
+          sobre: `${raiz}/sobre.html`,
           convite: `${raiz}/convite.html`,
           convites: `${raiz}/convites.html`,
         },

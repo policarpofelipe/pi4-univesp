@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PI4 UNIVESP — Sobre</title>
+  </head>
+  <body class="shell shell-painel">
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="shell-top">
+      <p class="shell-marca">PI4 UNIVESP</p>
+      <nav class="shell-nav" aria-label="Principal">
+        <a href="/painel.html">Painel</a>
+        <a href="/fonte.html">Fonte</a>
+        <a href="/sobre.html" aria-current="page">Sobre</a>
+        <a id="nav-convites" hidden href="/convites.html">Convites</a>
+      </nav>
+      <div class="shell-user">
+        <span id="nome-usuario">…</span>
+        <span id="perfil-usuario" class="perfil">…</span>
+        <button type="button" class="botao botao-secundario" id="botao-sair">
+          Sair
+        </button>
+      </div>
+    </header>
+    <main id="conteudo" class="shell-main pagina-sobre">
+      <h1>Sobre</h1>
+      <p class="lede">
+        Para que serve o sistema e qual o papel de cada ferramenta. Os números
+        do período ficam no painel, porque mudam quando a carga muda.
+      </p>
+
+      <section aria-labelledby="titulo-funcao">
+        <h2 id="titulo-funcao">O que o sistema responde</h2>
+        <p>
+          O painel lê chamados reais de suporte e separa quatro perguntas. O que
+          merece atenção agora. O que o histórico leva a esperar na semana
+          seguinte ao fim da carga. Se o ritmo da equipe cobre essa demanda. O
+          que de fato aconteceu, para explorar com filtro.
+        </p>
+        <p>
+          A previsão de demanda é a pergunta do aprendizado de máquina. A
+          quantidade de pessoas é uma regra em cima dessa demanda: ritmo
+          histórico de atendimentos por operador ativo, vezes a equipe típica
+          daquela hora. A escala continua uma decisão humana.
+        </p>
+      </section>
+
+      <section aria-labelledby="titulo-fluxo">
+        <h2 id="titulo-fluxo">Como a informação circula</h2>
+        <p>
+          O navegador pede a página e os gráficos. O Apache entrega os arquivos
+          estáticos e encaminha o caminho <code>/api/*</code> para o FastAPI. O
+          FastAPI só responde a quem tem sessão. O MariaDB guarda os
+          atendimentos e calcula contagem, média e filtro.
+        </p>
+        <p>
+          Abrir o painel não treina modelo. O botão Treinar previsão lê a
+          tabela, compara os métodos e grava o resultado. A tela seguinte só lê
+          esse resultado.
+        </p>
+      </section>
+
+      <section aria-labelledby="titulo-ferramentas">
+        <h2 id="titulo-ferramentas">Ferramentas</h2>
+        <div class="tabela-envolve">
+          <table>
+            <caption>
+              Papel de cada ferramenta nesta versão
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Ferramenta</th>
+                <th scope="col">Para que serve</th>
+                <th scope="col">Por que esta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">MariaDB</th>
+                <td>Persistir os chamados e agregar o histórico.</td>
+                <td>É o banco do servidor. Filtro e agregação ficam nele.</td>
+              </tr>
+              <tr>
+                <th scope="row">FastAPI</th>
+                <td>Publicar consulta, treino e sessão.</td>
+                <td>API em Python, no mesmo processo da análise.</td>
+              </tr>
+              <tr>
+                <th scope="row">HTML, CSS e JavaScript</th>
+                <td>Montar a tela, os filtros e o menu.</td>
+                <td>
+                  Sem framework de interface. O gráfico não calcula a regra.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Plotly.js</th>
+                <td>Desenhar série, barra e heatmap.</td>
+                <td>Visual oficial do projeto, com título e unidade.</td>
+              </tr>
+              <tr>
+                <th scope="row">Vite e Node.js</th>
+                <td>Empacotar o frontend no build.</td>
+                <td>
+                  Não atendem a API e não rodam em produção como servidor.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Média do dia e da hora</th>
+                <td>Previsão publicada e critério de comparação.</td>
+                <td>
+                  Método simples, só com o passado, sem vazamento do futuro.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">scikit-learn</th>
+                <td>Treinar Ridge e árvore de boosting e medir o erro.</td>
+                <td>
+                  O teste são as últimas semanas, em ordem. O aprendizado só
+                  substitui a média se o erro médio cair pelo menos 5%.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Pandas</th>
+                <td>Previsto para preparar série e atributo.</td>
+                <td>
+                  Nesta versão a agregação ficou no banco e a série coube em
+                  lista. O Pandas não entrou no cálculo.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="titulo-limites">
+        <h2 id="titulo-limites">O que esta carga não sustenta</h2>
+        <h3>Categoria de problema</h3>
+        <p>
+          Não há campo de problema. A tag está vazia na maior parte dos
+          registros e, quando vem preenchida, só indica loop ou fora do horário.
+          Mais linhas no formato atual aumentam o histórico e não criam
+          categoria.
+        </p>
+        <h3>Fila, escala e o dia corrente</h3>
+        <p>
+          A carga tem abertura, início, fim, espera, atendimento, operador,
+          setor, contato e avaliação. Não traz fila, nem quem estava disponível,
+          nem movimento depois do último registro. O bloco Agora compara o
+          último dia da carga com o esperado para aquele dia da semana.
+        </p>
+        <h3>Chat sobre os dados</h3>
+        <p>
+          Não há modelo de linguagem. As respostas continuam nos gráficos, nas
+          tabelas e nas regras do painel.
+        </p>
+      </section>
+    </main>
+    <script type="module" src="/src/paginas/sobre.js"></script>
+  </body>
+</html>

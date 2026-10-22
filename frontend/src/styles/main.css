@@ -597,6 +597,19 @@ a:hover {
   width: min(100% - (var(--gutter) * 2), var(--content-width));
 }
 
+.pagina-sobre {
+  max-width: 46rem;
+}
+
+.pagina-sobre p {
+  max-width: 40rem;
+}
+
+.pagina-sobre code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.95em;
+}
+
 .filtros-painel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
