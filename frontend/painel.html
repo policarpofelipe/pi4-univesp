@@ -34,16 +34,6 @@
       </p>
       <p id="aviso-painel" class="aviso" hidden aria-live="polite"></p>
       <div id="inteligencia" hidden>
-        <section aria-labelledby="titulo-pontos">
-          <h2 id="titulo-pontos">Pontos de atenção</h2>
-          <p id="intro-pontos" class="grafico-pergunta"></p>
-          <p id="acao-previsao" hidden>
-            <button type="button" class="botao" id="botao-treinar">
-              Treinar previsão
-            </button>
-          </p>
-          <ul id="lista-pontos" class="lista-pontos"></ul>
-        </section>
         <section id="secao-agora" aria-labelledby="titulo-agora">
           <h2 id="titulo-agora">Agora</h2>
           <p id="aviso-agora" class="grafico-pergunta"></p>
@@ -302,6 +292,16 @@
             <div id="tabela-contatos"></div>
           </section>
         </div>
+      </section>
+      <section id="secao-pontos" aria-labelledby="titulo-pontos" hidden>
+        <h2 id="titulo-pontos">Pontos de atenção</h2>
+        <p id="intro-pontos" class="grafico-pergunta"></p>
+        <p id="acao-previsao" hidden>
+          <button type="button" class="botao" id="botao-treinar">
+            Treinar previsão
+          </button>
+        </p>
+        <ul id="lista-pontos" class="lista-pontos"></ul>
       </section>
     </main>
     <script type="module" src="/src/paginas/painel.js"></script>

@@ -201,6 +201,7 @@ function renderizarInteligencia(dados) {
   ultimaInteligencia = dados;
   const raiz = document.getElementById("inteligencia");
   raiz.hidden = false;
+  document.getElementById("secao-pontos").hidden = false;
   const agora = document.getElementById("secao-agora");
   const previsao = document.getElementById("secao-previsao");
   const evidencia = document.getElementById("secao-evidencia");
