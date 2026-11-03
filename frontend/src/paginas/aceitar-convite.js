@@ -1,4 +1,5 @@
 import "../styles/main.css";
+import { iniciarAcessibilidade } from "../acessibilidade.js";
 import { aceitarConvite, validarConvite } from "../api/convites.js";
 
 const aviso = document.getElementById("aviso-convite");
@@ -90,4 +91,5 @@ formulario.addEventListener("submit", async (evento) => {
   }
 });
 
+iniciarAcessibilidade();
 iniciar();

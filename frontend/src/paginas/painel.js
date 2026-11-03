@@ -1,4 +1,5 @@
 import "../styles/main.css";
+import { iniciarAcessibilidade } from "../acessibilidade.js";
 import Plotly from "plotly.js-dist-min";
 import {
   obterInteligencia,
@@ -22,6 +23,8 @@ const reduzirMovimento = window.matchMedia(
 ).matches;
 
 let meta = null;
+let ultimoResumo = null;
+let ultimaInteligencia = null;
 
 function token(nome) {
   return getComputedStyle(document.documentElement)
@@ -195,6 +198,7 @@ function paresLeitura(destino, pares) {
 }
 
 function renderizarInteligencia(dados) {
+  ultimaInteligencia = dados;
   const raiz = document.getElementById("inteligencia");
   raiz.hidden = false;
   const agora = document.getElementById("secao-agora");
@@ -624,6 +628,7 @@ async function renderizarGraficos(resumo) {
 }
 
 async function renderizar(resumo) {
+  ultimoResumo = resumo;
   renderizarKpis(resumo.kpis);
   renderizarTabela(
     "tabela-operadores",
@@ -752,4 +757,17 @@ botaoSair.addEventListener("click", async () => {
   }
 });
 
+window.addEventListener("pi4-acessibilidade", () => {
+  const pendentes = [];
+  if (ultimaInteligencia?.disponivel) {
+    renderizarInteligencia(ultimaInteligencia);
+    pendentes.push(...awaitDesenho);
+  }
+  if (ultimoResumo && ultimoResumo.kpis.volume !== 0) {
+    pendentes.push(renderizarGraficos(ultimoResumo));
+  }
+  Promise.all(pendentes);
+});
+
+iniciarAcessibilidade();
 iniciar();

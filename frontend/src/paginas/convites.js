@@ -1,4 +1,5 @@
 import "../styles/main.css";
+import { iniciarAcessibilidade } from "../acessibilidade.js";
 import { usuarioAtual } from "../api/autenticacao.js";
 import {
   criarConvite,
@@ -146,4 +147,5 @@ lista.addEventListener("click", async (evento) => {
   }
 });
 
+iniciarAcessibilidade();
 iniciar();

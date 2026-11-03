@@ -1,4 +1,5 @@
 import "../styles/main.css";
+import { iniciarAcessibilidade } from "../acessibilidade.js";
 import { sair, usuarioAtual } from "../api/autenticacao.js";
 import { importarFonte, obterFonte } from "../api/fonte.js";
 
@@ -184,4 +185,5 @@ botaoSair.addEventListener("click", async () => {
   }
 });
 
+iniciarAcessibilidade();
 iniciar();

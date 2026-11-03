@@ -1,4 +1,5 @@
 import "../styles/main.css";
+import { iniciarAcessibilidade } from "../acessibilidade.js";
 import { sair, usuarioAtual } from "../api/autenticacao.js";
 
 const nomeEl = document.getElementById("nome-usuario");
@@ -28,4 +29,5 @@ botaoSair.addEventListener("click", async () => {
   }
 });
 
+iniciarAcessibilidade();
 iniciar();

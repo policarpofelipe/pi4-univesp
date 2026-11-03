@@ -1,4 +1,5 @@
 import "../styles/main.css";
+import { iniciarAcessibilidade } from "../acessibilidade.js";
 import { entrar } from "../api/autenticacao.js";
 
 const formulario = document.getElementById("form-login");
@@ -25,3 +26,5 @@ formulario.addEventListener("submit", async (evento) => {
     botao.disabled = false;
   }
 });
+
+iniciarAcessibilidade();
