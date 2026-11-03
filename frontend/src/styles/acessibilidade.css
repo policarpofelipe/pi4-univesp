@@ -139,6 +139,11 @@
   background: transparent;
 }
 
+.shell-nav .botao-acessibilidade {
+  border-color: var(--color-border-strong);
+  background: #ffffff;
+}
+
 .botao-acessibilidade img {
   width: 1.75rem;
   height: 1.75rem;
