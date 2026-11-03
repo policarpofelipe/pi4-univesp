@@ -566,6 +566,26 @@ a:hover {
   text-transform: uppercase;
 }
 
+.ponto-acao {
+  margin-top: var(--space-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ponto-evidencia {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+#detalhes-pontos {
+  display: grid;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+#botao-atualizar-previsao {
+  margin-top: var(--space-md);
+}
+
 .tabela-detalhe {
   margin-top: var(--space-md);
 }
