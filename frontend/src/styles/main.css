@@ -738,6 +738,11 @@ a:hover {
   margin-top: var(--space-md);
 }
 
+#tabela-dias,
+#secao-previsao > #tabela-dias + .grafico {
+  margin-top: var(--space-lg);
+}
+
 .tabela-envolve {
   overflow-x: auto;
   background: var(--color-surface-raised);
